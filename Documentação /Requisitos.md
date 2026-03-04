@@ -24,6 +24,6 @@
 | **RNF03** | Confiabilidade | Os algoritmos de resumo e análise devem ser precisos para não distorcer falas ou planos oficiais. |
 | **RNF04** | Interoperabilidade | O sistema deve ser capaz de se integrar a APIs de plataformas de vídeo e redes sociais (X, Instagram, etc). |
 | **RNF05** | Visualização de Dados | Os índices de coerência devem ser apresentados de forma visual (gráficos ou barras). |
-| **RNF06** | Tecnologia | A IA deve ser desenvolvida em Python, rodar em container separado e se comunicar via API. |
+| **RNF06** | Tecnologia | O sistema deve usar IA a ser desenvolvida em Python, rodando em container separado e se comunicar via API. |
 | **RNF07** | Armazenamento | O sistema deve garantir a persistência de todos os dados coletados e processados. |
 | **RNF08** | Arquitetura | A comunicção entre containers deve ocorrer por meio de api. |

@@ -28,3 +28,4 @@
 | **RNF06** | Tecnologia | O sistema deve usar IA a ser desenvolvida em Python, rodando em container separado e se comunicar via API. |
 | **RNF07** | Armazenamento | O sistema deve garantir a persistência de todos os dados coletados e processados. |
 | **RNF08** | Arquitetura | A comunicção entre containers deve ocorrer por meio de api. |
+| **RNF09** | Confiabilidade | O sistema não pode conter informações falsas. |

@@ -12,7 +12,7 @@
 | **RF07** | Análise de Alinhamento Temático | O sistema deve confrontar as postagens com o plano de governo, indicando pontos condizentes ou divergentes. |
 | **RF08** | Cálculo de Coerência Geral | O sistema deve gerar uma porcentagem (%) de coerência global entre o discurso e a proposta de governo. |
 | **RF09** | Cálculo de Coerência por Tópico | O sistema deve exibir o índice de fidelidade para temas específicos (Ex: Saúde, Economia, Educação). |
-| **RF10** | Identificação do Espectro Político | O sistema deve identificar o espectro político do candidato e exibi-lo em um mapa visual. |
+| **RF10** | Identificação do Espectro Político | O sistema deve identificar os ideais do candidato e exibi-lo em forma de um diagrama de espectro politico. |
 | **RF11** | Fakenews| Verificação de Fakenews sobre falas e mídias dos candidatos. |
 
 ---

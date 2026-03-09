@@ -42,7 +42,7 @@
 - Pré-Condição:Nenhuma.
 - Pós-Condição: O sistema exibe os candidatos que correspondem aos critérios de busca.
 
-
+## Codificação do Diagrama
 ```plantuml
 @startuml
 left to right direction

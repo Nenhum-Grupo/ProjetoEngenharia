@@ -12,7 +12,7 @@ Para aprofundar o conhecimento sem a necessidade de consumir conteúdos longos, 
 
 ---
 
-## Codificação de Diagrama
+## Codificação do Diagrama
 ```plantuml
 @startuml
 skinparam shadowing false

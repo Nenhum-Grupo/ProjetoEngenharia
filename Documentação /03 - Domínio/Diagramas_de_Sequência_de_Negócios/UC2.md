@@ -4,7 +4,7 @@
 
 ---
 
-## Descrição do diagrama
+## Descrição do Diagrama
 
 O processo de análise de fidelidade tem início quando o Cidadão, já na página de um candidato específico, seleciona a seção "Análise de Coerência". A Interface processa a solicitação e apresenta de imediato o Índice de Coerência Geral, representado por uma porcentagem que reflete o alinhamento global entre o discurso público e as promessas oficiais.
 
@@ -12,7 +12,7 @@ Para uma investigação mais aprofundada, o usuário solicita o detalhamento por
 
 ---
 
-## Codificação do diagrama
+## Codificação do Diagrama
 ```plantuml
 @startuml
 skinparam shadowing false

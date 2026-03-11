@@ -27,9 +27,3 @@ PosicionamentoPublico "1" *-- "*" CoerenciaTopico : contém
 
 @enduml
 ```
-
-TopicoPlano "1" -down- "*" CoerenciaTopico
-PosicionamentoPublico "1" -- "*" CoerenciaTopico
-
-@enduml
-```

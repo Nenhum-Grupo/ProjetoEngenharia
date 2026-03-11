@@ -1,5 +1,5 @@
 # Diagrama de Classe de Implementação
-[![](https://img.plantuml.biz/plantuml/svg/ZLVDRXit4BxpAGXTB1T8W5w588WgBO85abgLNI2tWDuToKGeSa5o3HYjhts0FcAVf2HtbpyhSkEJjJF3RxxvuN3yIMaYTNzX2AaVb7T4aWlkIFE3dE5Ulp304XfD-9b1PC0e1_tI0HPIFmd4uAIn5bZIyvF6BRL7gE08ZK1uLNCDyaGQK7XTyqVHynPlMz8PgRfTuRyGQXXH2l_MguRi26zfIxJO2QwbO0oaiS2DuAfdEgZlGJxJ1ZPuLz0WX1yjeFIADMqtc79zYqmCDdIlKUjRz3hHyD8zQCAU82NICSA3yuFz-YoUGNeXmg0wamCPKRIuz4GRqX1HfLeR6aZW3INUVik98MWSfmeJaN7aNAwRYMJjOpAw2RkWze0PlGd_DQhPjkkOuMihYR-G5v1HdKePTtMQP4VeXA9Qo9TDo6WGBbGdiiyLQeE_6Da7B_eOAfUfXYzPpEUG2X2cv0YgluY3QUaDhhVXo_Cif7q4syFe5k4pI2BlUjVCSW3A7RlNal9pu5wekUMlHKSRSPX7yP0JkvkYeM_J0bp9a2qLQtf6P6suDP3ZE6WyfUYAB3JqU5lVoC43oHo17T5m5fAIoST1CAfDrFDstOiBeN6dUat5jJa1AkxVoP6bEdOTmbnSm9V5J46fQIk2u96AioGdIeB89BvYOBYB0IBjGzyIYHT3fcSHh7GD4huDBNBe7zcGsWtUcmm4uAZaYwWjg4OEn0gE0bTJZCRSSd81hiNWUWOE5x88RJcFJF79LldQorJyhxIbP95wBrduqBHxSsvcpPeueKxtsTnC0tvYWkW1RUUkm1MK1ndodV9rea1gW9vG3GJm_b9kN8jLVNiuLb-ttwlxF_wiZlkjaVXVk-htX-FTzxd0A_RriQeVZDp_cD0cmUncs27ctjtf3HvUN3fzvuQp9JbEFI7hTcao5-PnW9_DfmHw5sxyMoQh8kpPU7JZVAwzJRrcPwFrFR0sleTvxh22HnT9T7OMo_K8Io33KvO9PaXIV0rcuF6hOs7TEpA-7_cGuslscXIzvYT9b9Pzeti9U7tNw_BQbMc0-jAnU9PbDTaSH_hhR4NAATgHaElP6pnjX__zyo-EDX24YglXktSV5pR0XLNE7injRpyvihZA_UHiSQsxYODrmRjRQ_YNDYr79RTLvLOW7sfaMB9BTv_IKc8jy-l7qedS1h2uIPGEtGpvSPbAMpqgUNH9F_pz_dsnpUT3mXddkZe_Kvnv-IfaHiR09dyvaY7W3AykoWqUbnq9p3MCUgATYWB7grzN9dNkpso4PctcMrxMgBo9eTcsCntwPHMd9SVFM6It3vJVIQ9ZoHn5QFxq9vR9KnuNSSaCVGBUcd-C_mS0)](https://editor.plantuml.com/uml/ZLVDRXit4BxpAGXTB1T8W5w588WgBO85abgLNI2tWDuToKGeSa5o3HYjhts0FcAVf2HtbpyhSkEJjJF3RxxvuN3yIMaYTNzX2AaVb7T4aWlkIFE3dE5Ulp304XfD-9b1PC0e1_tI0HPIFmd4uAIn5bZIyvF6BRL7gE08ZK1uLNCDyaGQK7XTyqVHynPlMz8PgRfTuRyGQXXH2l_MguRi26zfIxJO2QwbO0oaiS2DuAfdEgZlGJxJ1ZPuLz0WX1yjeFIADMqtc79zYqmCDdIlKUjRz3hHyD8zQCAU82NICSA3yuFz-YoUGNeXmg0wamCPKRIuz4GRqX1HfLeR6aZW3INUVik98MWSfmeJaN7aNAwRYMJjOpAw2RkWze0PlGd_DQhPjkkOuMihYR-G5v1HdKePTtMQP4VeXA9Qo9TDo6WGBbGdiiyLQeE_6Da7B_eOAfUfXYzPpEUG2X2cv0YgluY3QUaDhhVXo_Cif7q4syFe5k4pI2BlUjVCSW3A7RlNal9pu5wekUMlHKSRSPX7yP0JkvkYeM_J0bp9a2qLQtf6P6suDP3ZE6WyfUYAB3JqU5lVoC43oHo17T5m5fAIoST1CAfDrFDstOiBeN6dUat5jJa1AkxVoP6bEdOTmbnSm9V5J46fQIk2u96AioGdIeB89BvYOBYB0IBjGzyIYHT3fcSHh7GD4huDBNBe7zcGsWtUcmm4uAZaYwWjg4OEn0gE0bTJZCRSSd81hiNWUWOE5x88RJcFJF79LldQorJyhxIbP95wBrduqBHxSsvcpPeueKxtsTnC0tvYWkW1RUUkm1MK1ndodV9rea1gW9vG3GJm_b9kN8jLVNiuLb-ttwlxF_wiZlkjaVXVk-htX-FTzxd0A_RriQeVZDp_cD0cmUncs27ctjtf3HvUN3fzvuQp9JbEFI7hTcao5-PnW9_DfmHw5sxyMoQh8kpPU7JZVAwzJRrcPwFrFR0sleTvxh22HnT9T7OMo_K8Io33KvO9PaXIV0rcuF6hOs7TEpA-7_cGuslscXIzvYT9b9Pzeti9U7tNw_BQbMc0-jAnU9PbDTaSH_hhR4NAATgHaElP6pnjX__zyo-EDX24YglXktSV5pR0XLNE7injRpyvihZA_UHiSQsxYODrmRjRQ_YNDYr79RTLvLOW7sfaMB9BTv_IKc8jy-l7qedS1h2uIPGEtGpvSPbAMpqgUNH9F_pz_dsnpUT3mXddkZe_Kvnv-IfaHiR09dyvaY7W3AykoWqUbnq9p3MCUgATYWB7grzN9dNkpso4PctcMrxMgBo9eTcsCntwPHMd9SVFM6It3vJVIQ9ZoHn5QFxq9vR9KnuNSSaCVGBUcd-C_mS0)
+[![](https://img.plantuml.biz/plantuml/svg/ZLTDRkCs5Dxp58GtTWQO0Rer1i6ujb0Oc6bS9osw6z3IiqCCHGeabJPei-q1UekUepVfIKfI4ad9f19lBF7zVU-7xprzKff8tTOC8VMDyeP8KkE6bD_81UxrCmCieTI4NnX438noqCyDO27req0CpXfhWIMzF6fSKIj21KUeLuGNlr3uRO7_GAXaH2cy9RoY5T7YCrNQqWm9zxzIS2q5Oo3N-FjMbSGpRpt5C_i7-9sUgBJg0hzQtNYw0WQbmKHaJwwqMD5gZIdN7TSBSdyJW0UGPyfc87hE7MZ27k5ra0T6k5YLWzm-1X6u2jMOAChN6RS29F2IaWodyUiboiIUQ-CIAK7XrPwVHCihlAb8OqxLJPIYNEXj68p_gcLHfEz1Fj4IJ3Go51FRarKeFI4AFhDPawEqlLnLobLuBP36Xj8RTu7zGJo1z8S8Gn_70D7gfMTQafA8OaorhlNHzFmRJWn0s4u8nYDZA9jBGvlBe27FvMsIiqtJC8FNtYdycJo3ZAzI9k8kJyFP4HgXg1RoEIhOS3YJdOW_bQWrjbVkep-w3PbBPCEdBCPp61yWJCaHL5kBWsakQxpVX3UFCnFsNjaEUhC8Nq0IUTUwOfQTefJOlPQKNmBsJCujVYqQMeh3r8k7rB6xAHhQQfo0gpDaKyNAbX6vDzXAI67iA1vIT4Lc2hg_hM_4u1N9580jqN0HafB1na4mgetNqtBTYPhGk58zfU3QI81AZG8BjQywXBcemQV5p2EfQIN2mOcAYoHdIiAH2Np1m60NlGewZXTUupCJH4yArDVAoBn1sRB8ddIL4zuDNd9eJwoB-HhlJ6Y2ugWMPhLMe4hP8SuO2bXDbjpuge6ReUHCJvH3JMPLMymzKdoswR-sueFLUJ3Mxuw2kYwyKL21jtM-HgokujU7O_5byxMu_-dduhZRc1F_j2r-V3ZUVPqUUC9kVops3-RSFmpQXeD94Tf-uKRSCEwwuKQ7zrGVj23x1YFalffhWfdM5zHFMi58zJPShhSqCKNOax7eEkUKUZEsccn3rdQ7sjZkMgVJ5ImwJoBPYI_NtMAaCaoDX3DTa7e5NsX5oKHvtE2jMjUo-rQTTZakt9V9SdEMH6dPbhgLW5TthSvlE8a2sDSDYxj3afACSKI_ZbP47Bpj0RcQNU9X4VllhxznDEmHocvXxz_VpYnRCrkJ5KmjIg-8p6vDhyXcDwXbxAnptjrQWp-tr3WegGKcjMruLoF67DzupSZDVykPdlHp4gbXEpkqSqBBBZukKkDIZr8UNTAFVtxua2tpQPDmpAcgJlSKnvw_2ecMqQ59NuvH4t2CLnTbYVkzGW9p1QCUQQCYn_7YkuK9dVlBpw4rDePLI_5jMdAo5Soolrja1dCaXIOAhUoxNZXU5DPkJ_ltdnh50H-nJyTp44cZU9ki2Qpxl3qEOOr2wZ_FRKLcFyPJ7ykZYthzQOoMRZlqHZ5AVUHO9M5dHEWJyAgjsVy0)](https://editor.plantuml.com/uml/ZLTDRkCs5Dxp58GtTWQO0Rer1i6ujb0Oc6bS9osw6z3IiqCCHGeabJPei-q1UekUepVfIKfI4ad9f19lBF7zVU-7xprzKff8tTOC8VMDyeP8KkE6bD_81UxrCmCieTI4NnX438noqCyDO27req0CpXfhWIMzF6fSKIj21KUeLuGNlr3uRO7_GAXaH2cy9RoY5T7YCrNQqWm9zxzIS2q5Oo3N-FjMbSGpRpt5C_i7-9sUgBJg0hzQtNYw0WQbmKHaJwwqMD5gZIdN7TSBSdyJW0UGPyfc87hE7MZ27k5ra0T6k5YLWzm-1X6u2jMOAChN6RS29F2IaWodyUiboiIUQ-CIAK7XrPwVHCihlAb8OqxLJPIYNEXj68p_gcLHfEz1Fj4IJ3Go51FRarKeFI4AFhDPawEqlLnLobLuBP36Xj8RTu7zGJo1z8S8Gn_70D7gfMTQafA8OaorhlNHzFmRJWn0s4u8nYDZA9jBGvlBe27FvMsIiqtJC8FNtYdycJo3ZAzI9k8kJyFP4HgXg1RoEIhOS3YJdOW_bQWrjbVkep-w3PbBPCEdBCPp61yWJCaHL5kBWsakQxpVX3UFCnFsNjaEUhC8Nq0IUTUwOfQTefJOlPQKNmBsJCujVYqQMeh3r8k7rB6xAHhQQfo0gpDaKyNAbX6vDzXAI67iA1vIT4Lc2hg_hM_4u1N9580jqN0HafB1na4mgetNqtBTYPhGk58zfU3QI81AZG8BjQywXBcemQV5p2EfQIN2mOcAYoHdIiAH2Np1m60NlGewZXTUupCJH4yArDVAoBn1sRB8ddIL4zuDNd9eJwoB-HhlJ6Y2ugWMPhLMe4hP8SuO2bXDbjpuge6ReUHCJvH3JMPLMymzKdoswR-sueFLUJ3Mxuw2kYwyKL21jtM-HgokujU7O_5byxMu_-dduhZRc1F_j2r-V3ZUVPqUUC9kVops3-RSFmpQXeD94Tf-uKRSCEwwuKQ7zrGVj23x1YFalffhWfdM5zHFMi58zJPShhSqCKNOax7eEkUKUZEsccn3rdQ7sjZkMgVJ5ImwJoBPYI_NtMAaCaoDX3DTa7e5NsX5oKHvtE2jMjUo-rQTTZakt9V9SdEMH6dPbhgLW5TthSvlE8a2sDSDYxj3afACSKI_ZbP47Bpj0RcQNU9X4VllhxznDEmHocvXxz_VpYnRCrkJ5KmjIg-8p6vDhyXcDwXbxAnptjrQWp-tr3WegGKcjMruLoF67DzupSZDVykPdlHp4gbXEpkqSqBBBZukKkDIZr8UNTAFVtxua2tpQPDmpAcgJlSKnvw_2ecMqQ59NuvH4t2CLnTbYVkzGW9p1QCUQQCYn_7YkuK9dVlBpw4rDePLI_5jMdAo5Soolrja1dCaXIOAhUoxNZXU5DPkJ_ltdnh50H-nJyTp44cZU9ki2Qpxl3qEOOr2wZ_FRKLcFyPJ7ykZYthzQOoMRZlqHZ5AVUHO9M5dHEWJyAgjsVy0)
 
 ---
 
@@ -39,12 +39,30 @@ O sistema é organizado em camadas:
 
 ## Codificação do Diagrama
 ```plantuml
-
 @startuml
 
 skinparam packageStyle rectangle
 skinparam linetype ortho
 left to right direction
+
+package "View" {
+
+class CandidatoListView {
+        controller: BuscaCandidatoController
+        
+        exibirListaCandidatos()
+        selecionarCandidadto(id: int)
+    }
+
+    class CandidatoPerfilView {
+        controller: CandidatoDetalheController
+        
+        exibirPlano(candidatoId: int)
+        exibirEspectro(candidatoId: int)
+        exibirCoerencia(candidatoId: int)
+    }
+
+}
 
 package "Interfaces (Inbound Adapters)" {
 
@@ -109,6 +127,7 @@ class Candidato {
  partido: String
  biografia: String
  anoEleicao: int
+ indiceCoerencia : float
 }
 
 class PlanoDeGoverno {
@@ -131,20 +150,6 @@ class PosicionamentoPublico {
  descricao: String
  data: Date
  fonte: String
-}
-
-class ConteudoMidia {
- id: int
- titulo: String
- url: String
- tipo: String
- dataPublicacao: Date
-}
-
-class IndiceCoerencia {
- id: int
- indiceGeral: float
- dataCalculo: Date
 }
 
 class CoerenciaTopico {
@@ -232,17 +237,22 @@ IAResumoPort <|.. IAResumoAdapter
 
 ' Domain relationships
 
-Candidato "1" -- "1" PlanoDeGoverno
-Candidato "1" -- "1" IndiceCoerencia
-Candidato "1" -- "1" CategoriaEspectroPolitico
+Candidato "1" -- "1" CategoriaEspectroPolitico : possui >
+Candidato "1" -- "1" PlanoDeGoverno : possui >
+Candidato "1" -- "*" PosicionamentoPublico : possui >
 
-PlanoDeGoverno "1" -- "*" TopicoPlano
+PlanoDeGoverno "1" *-- "*" TopicoPlano : contém
 
-Candidato "1" -- "*" PosicionamentoPublico
-PosicionamentoPublico "1" -- "*" ConteudoMidia
+TopicoPlano "1" *-- "*" CoerenciaTopico : contém
+PosicionamentoPublico "1" *-- "*" CoerenciaTopico : contém
 
-IndiceCoerencia "1" -- "*" CoerenciaTopico
-TopicoPlano "1" -- "*" CoerenciaTopico
+' View Relations
+
+CandidatoListView --> BuscaCandidatoController
+CandidatoPerfilView --> CandidatoDetalheController
+
+'Layer Relation 
+"Application Layer" --> "Entities"
 
 @enduml
 ```

@@ -1,30 +1,32 @@
 # Diagrama de Classes de Negócios
-[![](https://img.plantuml.biz/plantuml/svg/ZP8n3iCW34LtJX5bh9IXDuYKLbM7IXbw0GeUa8WTWTDUloYGA526Jk3FuvjlqNkMZfV92g6izBuP96gZ9LEgHokHBd2ZDpZSn2VDHj5wj67aZJA4SW9a6fUN3S1cISYmQ7eORMJIxg6BWe700QfTlVeP53iQoHe-6YGizXLYVsJJdjkcq_J1RjqMhytB20Vmr6O9Ihj8r1DLrUErF6p5EYm_CUjOEQEYZcXgMWpe42yRKONz8r5XtWFgy6E-)](https://editor.plantuml.com/uml/ZP8n3iCW34LtJX5bh9IXDuYKLbM7IXbw0GeUa8WTWTDUloYGA526Jk3FuvjlqNkMZfV92g6izBuP96gZ9LEgHokHBd2ZDpZSn2VDHj5wj67aZJA4SW9a6fUN3S1cISYmQ7eORMJIxg6BWe700QfTlVeP53iQoHe-6YGizXLYVsJJdjkcq_J1RjqMhytB20Vmr6O9Ihj8r1DLrUErF6p5EYm_CUjOEQEYZcXgMWpe42yRKONz8r5XtWFgy6E-)
+[![](https://img.plantuml.biz/plantuml/svg/ZP91QiCm44Nt0jr1U1a8f8jiiYY1D7JhHIymaOTcY3mZD7Blb7FaOh6JsYXk8Ds9F_zz_WpQQeQKkpPOOusUY2CaQ1rBWuhHhLUbce1FesgD3w3gTi0DDP1b5Ee0B1_uAJ-OU5A_99ANssmoYf8dOMYHizJT8VIESRZNY3udgILGBlITO4Bs1FV0eSVKm5LlbLic-ZxcvUqz3t4R5qMr8_V-1xiJZ-LV-1VLynqUC6jccGEz-CMBg_IG5ywNSpimvQ04PkkNqFCg_uIjsI8t_JUu0W00)](https://editor.plantuml.com/uml/ZP91QiCm44Nt0jr1U1a8f8jiiYY1D7JhHIymaOTcY3mZD7Blb7FaOh6JsYXk8Ds9F_zz_WpQQeQKkpPOOusUY2CaQ1rBWuhHhLUbce1FesgD3w3gTi0DDP1b5Ee0B1_uAJ-OU5A_99ANssmoYf8dOMYHizJT8VIESRZNY3udgILGBlITO4Bs1FV0eSVKm5LlbLic-ZxcvUqz3t4R5qMr8_V-1xiJZ-LV-1VLynqUC6jccGEz-CMBg_IG5ywNSpimvQ04PkkNqFCg_uIjsI8t_JUu0W00)
 
 ---
 ## Codificação do Diagrama
 ```plantuml
 @startuml
 
+skinparam nodesep 50
+skinparam ranksep 50
+
 class Candidato
 class PlanoDeGoverno
 class TopicoPlano
 class PosicionamentoPublico
-class ConteudoMidia
-class IndiceCoerencia
 class EspectroPolitico
 class CoerenciaTopico
 
-Candidato "1" -down- "1" PlanoDeGoverno
-PlanoDeGoverno "1" -- "*" TopicoPlano
+Candidato "1" -right- "1" EspectroPolitico : possui >
+Candidato "1" -- "1" PlanoDeGoverno : possui >
+Candidato "1" -- "*" PosicionamentoPublico : possui >
 
-Candidato "1" -- "*" PosicionamentoPublico
-PosicionamentoPublico "1" -- "*" ConteudoMidia
+PlanoDeGoverno "1" *-- "*" TopicoPlano : contém
 
-Candidato "1" -- "1" EspectroPolitico
+TopicoPlano "1" *-- "*" CoerenciaTopico : contém
+PosicionamentoPublico "1" *-- "*" CoerenciaTopico : contém
 
-Candidato "1" -- "1" IndiceCoerencia
-IndiceCoerencia "1" - "*" CoerenciaTopico
+@enduml
+```
 
 TopicoPlano "1" -down- "*" CoerenciaTopico
 PosicionamentoPublico "1" -- "*" CoerenciaTopico

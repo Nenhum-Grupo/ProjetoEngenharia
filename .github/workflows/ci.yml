@@ -25,9 +25,9 @@ jobs:
         with:
           filters: |
             java:
-              - 'Sistema (JAVA)/**'
+              - 'Sistema (JAVA)/app/**'
             python:
-              - 'AI (Python)/**'
+              - 'AI (Python)/app/**'
 
   java:
     needs: detect-changes

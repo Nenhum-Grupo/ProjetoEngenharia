@@ -13,25 +13,38 @@ jobs:
   detect-changes:
     runs-on: ubuntu-latest
     outputs:
-      java: ${{ steps.filter.outputs.java }}
-      python: ${{ steps.filter.outputs.python }}
+      java_changed: ${{ steps.check.outputs.java_changed }}
+      python_changed: ${{ steps.check.outputs.python_changed }}
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v3
 
-      - name: Detectar mudanças
-        id: filter
-        uses: dorny/paths-filter@v3
-        with:
-          filters: |
-            java:
-              - 'Sistema \(JAVA\)/app/**'
-            python:
-              - 'AI \(Python\)/app/**'
+      - name: Check directories
+        id: check
+        run: |
+          # Detecta mudanças no diretório Java
+          if git diff --name-only origin/main...HEAD | grep -q '^Sistema (JAVA)/app/'; then
+            echo "java_changed=true" >> $GITHUB_OUTPUT
+          else
+            echo "java_changed=false" >> $GITHUB_OUTPUT
+          fi
+
+          # Detecta mudanças no diretório Python
+          if git diff --name-only origin/main...HEAD | grep -q '^AI (Python)/app/'; then
+            echo "python_changed=true" >> $GITHUB_OUTPUT
+          else
+            echo "python_changed=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Output result
+        run: |
+          echo "Java directory changed? ${{ steps.check.outputs.java_changed }}"
+          echo "Python directory changed? ${{ steps.check.outputs.python_changed }}"
 
   java:
     needs: detect-changes
-    if: needs.detect-changes.outputs.java == 'true'
+    if: needs.detect-changes.outputs.java_changed == 'true'
     runs-on: ubuntu-latest
 
     steps:
@@ -48,7 +61,7 @@ jobs:
 
   python:
     needs: detect-changes
-    if: needs.detect-changes.outputs.python == 'true'
+    if: needs.detect-changes.outputs.python_changed == 'true'
     runs-on: ubuntu-latest
 
     steps:

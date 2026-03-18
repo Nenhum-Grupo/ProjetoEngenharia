@@ -9,7 +9,11 @@ on:
 
   workflow_dispatch:
 
+
+  
+
 jobs:
+
   detect-changes:
     runs-on: ubuntu-latest
     outputs:
@@ -17,30 +21,40 @@ jobs:
       python_changed: ${{ steps.check.outputs.python_changed }}
 
     steps:
-      - name: Checkout code
+      - name: Checkout code with full history
         uses: actions/checkout@v3
+        with:
+          fetch-depth: 0   # importantíssimo para ver todos os commits e PRs
 
       - name: Check directories
         id: check
         run: |
-          # Detecta mudanças no diretório Java
-          if git diff --name-only origin/main...HEAD | grep -q '^Sistema (JAVA)/app/'; then
+          # Escapando caracteres especiais no grep
+          JAVA_DIR='Sistema (JAVA)/app/'
+          PYTHON_DIR='AI (Python)/app/'
+
+          # Verifica se houve mudança no diretório Java
+          if git diff --name-only origin/main...HEAD | grep -F -q "$JAVA_DIR"; then
             echo "java_changed=true" >> $GITHUB_OUTPUT
           else
             echo "java_changed=false" >> $GITHUB_OUTPUT
           fi
 
-          # Detecta mudanças no diretório Python
-          if git diff --name-only origin/main...HEAD | grep -q '^AI (Python)/app/'; then
+          # Verifica se houve mudança no diretório Python
+          if git diff --name-only origin/main...HEAD | grep -F -q "$PYTHON_DIR"; then
             echo "python_changed=true" >> $GITHUB_OUTPUT
           else
             echo "python_changed=false" >> $GITHUB_OUTPUT
           fi
 
-      - name: Output result
+      - name: Output results
         run: |
           echo "Java directory changed? ${{ steps.check.outputs.java_changed }}"
           echo "Python directory changed? ${{ steps.check.outputs.python_changed }}"
+
+
+
+          
 
   java:
     needs: detect-changes

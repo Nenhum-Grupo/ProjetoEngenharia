@@ -116,10 +116,11 @@ jobs:
     steps:
     - uses: actions/checkout@v4
     - name: Build da Imagem Java
-      run: docker build \
+      run: |
+        docker build \
             -t ${{ secrets.DOCKER_HUB_USER }}/system-eleic:${{ needs.prepare.outputs.tag }} \
             -t ${{ secrets.DOCKER_HUB_USER }}/system-eleic:latest \
-            "./sistema-java/app"
+            ./sistema-java/app
             
     - name: Push Imagem Java
       run: |
@@ -137,10 +138,11 @@ jobs:
     steps:
     - uses: actions/checkout@v4
     - name: Build da Imagem Python
-      run: docker build \
-            -t ${{ secrets.DOCKER_HUB_USER }}/ai-sys-eleic:${{ needs.prepare.outputs.tag }} \
-            -t ${{ secrets.DOCKER_HUB_USER }}/ai-sys-eleic:latest \
-            "./ai-python/app"
+      run: |
+        docker build \
+              -t ${{ secrets.DOCKER_HUB_USER }}/ai-sys-eleic:${{ needs.prepare.outputs.tag }} \
+              -t ${{ secrets.DOCKER_HUB_USER }}/ai-sys-eleic:latest \
+              "./ai-python/app"
             
     - name: Push Imagem Python
       run: |

@@ -3,9 +3,11 @@ name: CI-CD
 
 on:
   pull_request:
-    branches: [ "*" ]
   push:
     branches: [ "main" ]
+  merge_group:
+    types: checks_requested
+    
 
   workflow_dispatch:
   
@@ -82,7 +84,7 @@ jobs:
   #4. PREPARAR VERSÃO DA IMAGEM DOCKER
   prepare:
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/main'
+    if: github.event_name == 'merge_group'
 
     outputs:
       tag: ${{ steps.vars.outputs.tag }}
@@ -96,7 +98,7 @@ jobs:
   #5. LOGIN NO DOCKER HUB
   docker-login:
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/main'
+    if: github.event_name == 'merge_group'
     
     steps:
       - name: Login to Docker Hub
@@ -111,7 +113,7 @@ jobs:
   build-java-image:
     runs-on: ubuntu-latest
     needs: [prepare, docker-login, detect-changes, java]
-    if: needs.detect-changes.outputs.java == 'true' && github.ref == 'refs/heads/main'
+    if: needs.detect-changes.outputs.java == 'true' && github.event_name == 'merge_group'
 
     steps:
     - uses: actions/checkout@v4
@@ -133,7 +135,7 @@ jobs:
   build-python-image:
     runs-on: ubuntu-latest
     needs: [prepare, docker-login, detect-changes, python]
-    if: needs.detect-changes.outputs.python == 'true' && github.ref == 'refs/heads/main'
+    if: needs.detect-changes.outputs.python == 'true' && github.event_name == 'merge_group'
 
     steps:
     - uses: actions/checkout@v4

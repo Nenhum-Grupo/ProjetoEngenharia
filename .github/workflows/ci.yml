@@ -3,60 +3,46 @@ name: CI
 
 on:
   pull_request:
-    branches: [ "main" ]
+    branches: [ "*" ]
   push:
     branches: [ "main" ]
 
   workflow_dispatch:
-
-
   
 
 jobs:
 
+  #1. Detecta Mudança em Determinados Diretórios
   detect-changes:
-      runs-on: ubuntu-latest
-      outputs:
-        java_changed: ${{ steps.check.outputs.java_changed }}
-        python_changed: ${{ steps.check.outputs.python_changed }}
-  
-      steps:
-        - name: Checkout code with full history
-          uses: actions/checkout@v3
-          with:
-            fetch-depth: 0   # importantíssimo para ver todos os commits e PRs
-  
-        - name: Check directories
-          id: check
-          run: |
-            # Escapando caracteres especiais no grep
-            JAVA_DIR='Sistema (JAVA)/app/'
-            PYTHON_DIR='AI (Python)/app/'
-  
-            # Verifica se houve mudança no diretório Java
-            if git diff --name-only origin/main...HEAD | grep -F -q "$JAVA_DIR"; then
-              echo "java_changed=true" >> $GITHUB_OUTPUT
-            else
-              echo "java_changed=false" >> $GITHUB_OUTPUT
-            fi
-  
-            # Verifica se houve mudança no diretório Python
-            if git diff --name-only origin/main...HEAD | grep -F -q "$PYTHON_DIR"; then
-              echo "python_changed=true" >> $GITHUB_OUTPUT
-            else
-              echo "python_changed=false" >> $GITHUB_OUTPUT
-            fi
-  
-        - name: Output results
-          run: |
-            echo "Java directory changed? ${{ steps.check.outputs.java_changed }}"
-            echo "Python directory changed? ${{ steps.check.outputs.python_changed }}"
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request'
+    
+    outputs:
+      java: ${{ steps.filter.outputs.java }}
+      python: ${{ steps.filter.outputs.python }}
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Detect changes
+        id: filter
+        uses: dorny/paths-filter@v3
+        with:
+          filters: |
+            java:
+              - 'Sistema (JAVA)/app/**'
+            python:
+              - 'AI (Python)/app/**'
 
 
+
+  #2. CI JAVA COM BUILD E TEST
   java:
     runs-on: ubuntu-latest
     needs: detect-changes
-    if: needs.detect-changes.outputs.java_changed == 'true'
+    if: needs.detect-changes.outputs.java == 'true'
 
     steps:
       - uses: actions/checkout@v4
@@ -64,16 +50,18 @@ jobs:
       - uses: actions/setup-java@v4
         with:
           distribution: 'temurin'
-          java-version: '17'
+          java-version: '21'
 
       - name: Build + Test Java
         working-directory: 'Sistema (JAVA)/app/'
         run: mvn clean install
 
+
+  #3. CI PYTHON COM BUILD E TEST
   python:
     runs-on: ubuntu-latest
     needs: detect-changes
-    if: needs.detect-changes.outputs.python_changed == 'true'
+    if: needs.detect-changes.outputs.python == 'true'
 
     steps:
       - uses: actions/checkout@v4
@@ -89,3 +77,75 @@ jobs:
       - name: Rodar testes
         working-directory: 'AI (Python)/app/**'
         run: pytest
+
+
+
+  #4. PREPARAR VERSÃO DA IMAGEM DOCKER
+  prepare:
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+
+    outputs:
+      tag: ${{ steps.vars.outputs.tag }}
+
+    steps:
+      - id: vars
+        run: echo "tag=${GITHUB_SHA::7}" >> $GITHUB_OUTPUT
+
+
+
+  #5. LOGIN NO DOCKER HUB
+  docker-login:
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    
+    steps:
+      - name: Login to Docker Hub
+        uses: docker/login-action@v1
+        with:
+          username: ${{secrets.DOCKER_HUB_USER}}
+          password: ${{secrets.DOCKER_HUB_TOKEN}}
+
+          
+
+  #6. BUILD IMAGEM DE JAVA E PUBLICAR NO DOCKER HUB
+  build-java-image:
+    runs-on: ubuntu-latest
+    needs: [prepare, docker-login, detect-changes]
+    if: needs.detect-changes.outputs.java == 'true' && github.ref == 'refs/heads/main'
+
+    steps:
+    - uses: actions/checkout@v4
+    - name: Build da Imagem Java
+      run: docker build \
+            -t ${{ secrets.DOCKER_HUB_USER }}/system-eleic:${{ needs.prepare.outputs.tag }} \
+            -t ${{ secrets.DOCKER_HUB_USER }}/system-eleic:latest \
+            "./Sistema (JAVA)/app"
+            
+    - name: Push Imagem Java
+      run: |
+          docker push ${{ secrets.DOCKER_HUB_USER }}/python-app:${{ needs.prepare.outputs.tag }}
+          docker push ${{ secrets.DOCKER_HUB_USER }}/python-app:latest
+
+
+
+  #7. BUILD IMAGEM DE PYTHON E PUBLICAR NO DOCKER HUB
+  build-python-image:
+    runs-on: ubuntu-latest
+    needs: [prepare, docker-login, detect-changes]
+    if: needs.detect-changes.outputs.python == 'true' && github.ref == 'refs/heads/main'
+
+    steps:
+    - uses: actions/checkout@v4
+    - name: Build da Imagem Python
+      run: docker build \
+            -t ${{ secrets.DOCKER_HUB_USER }}/ai-sys-eleic:${{ needs.prepare.outputs.tag }} \
+            -t ${{ secrets.DOCKER_HUB_USER }}/ai-sys-eleic:latest \
+            "./AI (Python)/app"
+            
+    - name: Push Imagem Python
+      run: |
+          docker push ${{ secrets.DOCKER_HUB_USER }}/python-app:${{ needs.prepare.outputs.tag }}
+          docker push ${{ secrets.DOCKER_HUB_USER }}/python-app:latest
+
+  

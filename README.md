@@ -8,7 +8,7 @@
 
 ---
 ## Definição da Demanda
-- [Documentação Completa](README.md#L58)
+- [Documentação Completa](README.md#L58-78)
 ### 1 Problema ou oportunidade percebida
 
   Este projeto nasce da necessidade real de democratizar o acesso à informação política no Brasil. Hoje, grande parte da população encontra dificuldades para compreender planos de governo, acompanhar posicionamentos públicos e avaliar se há coerência entre o que foi prometido e o que é efetivamente defendido ao longo do tempo. Os documentos oficiais costumam ser extensos, escritos em linguagem técnica e pouco acessível, o que afasta o cidadão comum do debate qualificado e abre espaço para discursos superficiais, emocionais ou populistas.

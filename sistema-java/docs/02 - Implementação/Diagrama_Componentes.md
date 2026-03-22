@@ -1,5 +1,5 @@
 # Diagrama de Componente
-[![](https://img.plantuml.biz/plantuml/svg/ZPB1JiCm44JlaV8FgvpWq5z0hSeb9mu8JbmMPvDQTTQMlGPLY7_73eKODLMGRwEPv_78so3e9Owchl89HyqEFOxWK1rne4Sv6G9FIf07GwN3Q2OvEGBhvM3hob0l81Qy7Wu2dSuXRJbZbHsTPMA1vbdJUmCVMOMVIw1voshMFhzx586MXNoFYi8BtxJyQYDtiElG9JdSNgBqhty65hYTSqOhpCqIxoaGx37G4WXdvoBftewe6VRMqsKuERJegKEXkZJLSgsMUuz1V5GIFQLc3r7-yTGoD7FF8sysTwlp9VFQm1Fcwcm9S7tIALhkbDn_PZjNN7zxNMs9k_HFlm00)](https://editor.plantuml.com/uml/ZPB1JiCm44JlaV8FgvpWq5z0hSeb9mu8JbmMPvDQTTQMlGPLY7_73eKODLMGRwEPv_78so3e9Owchl89HyqEFOxWK1rne4Sv6G9FIf07GwN3Q2OvEGBhvM3hob0l81Qy7Wu2dSuXRJbZbHsTPMA1vbdJUmCVMOMVIw1voshMFhzx586MXNoFYi8BtxJyQYDtiElG9JdSNgBqhty65hYTSqOhpCqIxoaGx37G4WXdvoBftewe6VRMqsKuERJegKEXkZJLSgsMUuz1V5GIFQLc3r7-yTGoD7FF8sysTwlp9VFQm1Fcwcm9S7tIALhkbDn_PZjNN7zxNMs9k_HFlm00)
+[![](https://img.plantuml.biz/plantuml/svg/ZPB1JiCm44JlaV8FgvpWq5z0hSeb9mwedBWipYQrwgmjUmsg4F-E7LHYr5H4lercdiUJR8EWbpYQkiedd3Gxz3Y2GtN2WPxbR0WyAK4U39KEevdax0YibwEjAqEzW5ZmUZWAT3g7jEMCLNPqbea5cXTD7mryPXKkbq3pdjMiVVtqA08j2_aU5OLNlclvpKRkODUXItAulqRfN_yCB70xvunMc9ibtY4Gx37G4WXdvoBfqOwe6VRMqtKuERJegKEXkZJLSgsMUuz1V5GIFQLcJr5MFBKCpTn_Dzj4jtcuV8ir_ko-kLm2t5vrYfPJ9VUVvIR3ckVNrPQuIx_gDm00)](https://editor.plantuml.com/uml/ZPB1JiCm44JlaV8FgvpWq5z0hSeb9mwedBWipYQrwgmjUmsg4F-E7LHYr5H4lercdiUJR8EWbpYQkiedd3Gxz3Y2GtN2WPxbR0WyAK4U39KEevdax0YibwEjAqEzW5ZmUZWAT3g7jEMCLNPqbea5cXTD7mryPXKkbq3pdjMiVVtqA08j2_aU5OLNlclvpKRkODUXItAulqRfN_yCB70xvunMc9ibtY4Gx37G4WXdvoBfqOwe6VRMqtKuERJegKEXkZJLSgsMUuz1V5GIFQLcJr5MFBKCpTn_Dzj4jtcuV8ir_ko-kLm2t5vrYfPJ9VUVvIR3ckVNrPQuIx_gDm00)
 
 ---
 ## Diagrama de Componentes
@@ -55,7 +55,7 @@ component "Infrastructure\n(Outbound Adapters)" {
 
 }
 
-"View" --> "Interfaces\n(Inbound Adapters)"
+"Interfaces\n(Inbound Adapters)" -up-> "View" 
 "Interfaces\n(Inbound Adapters)" --> "Application\n(Use Cases)"
 "Application\n(Use Cases)" --> "Domain Core"
 "Domain Core" --> "Infrastructure\n(Outbound Adapters)"

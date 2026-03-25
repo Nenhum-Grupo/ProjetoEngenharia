@@ -8,7 +8,6 @@
 
 ---
 ## Definição da Demanda
-- [Documentação Completa](README.md#documentação)
 ### 1 Problema ou oportunidade percebida
 
   Este projeto nasce da necessidade real de democratizar o acesso à informação política no Brasil. Hoje, grande parte da população encontra dificuldades para compreender planos de governo, acompanhar posicionamentos públicos e avaliar se há coerência entre o que foi prometido e o que é efetivamente defendido ao longo do tempo. Os documentos oficiais costumam ser extensos, escritos em linguagem técnica e pouco acessível, o que afasta o cidadão comum do debate qualificado e abre espaço para discursos superficiais, emocionais ou populistas.
@@ -54,25 +53,3 @@ Por fim, serão realizadas etapas de integração, testes e implantação do sis
   Toda a construção do projeto será orientada por princípios de neutralidade ideológica, transparência metodológica e acessibilidade. A linguagem utilizada na apresentação dos conteúdos será simples e inclusiva, com foco em legibilidade e organização visual que favoreça a leitura.
 
 As fontes utilizadas serão públicas e rastreáveis, e a metodologia de análise deverá ser clara o suficiente para permitir compreensão e eventual auditoria. O objetivo final é ampliar o discernimento e a capacidade crítica da população brasileira, estimulando uma relação mais consciente com o processo democrático e fortalecendo a cobrança fundamentada durante o exercício do mandato.
-
-## Documentação:
-- [Histórias de Usuários](./Documentação/01%20-%20Requisitos/Histórias_De_Usuários.md)
-- [Requisitos](./Documentação/01%20-%20Requisitos/Requisitos.md)
-- [Casos de uso](./Documentação/02%20-%20Casos%20de%20Uso/Diagrama_Casos_de_Uso.md)
-- [Implantação](./Documentação/03%20-%20Implementação/Diagrama_Implantação.md)
-- Diagramas de Sequência de Negócios:
-  - [UC1](./sistema-java/docs/01%20-%20Domínio/Diagramas_de_Sequência_do_Sistema/UC1.md)
-  - [UC2](./sistema-java/docs/01%20-%20Domínio/Diagramas_de_Sequência_do_Sistema/UC2.md)
-  - [UC3](./sistema-java/docs/01%20-%20Domínio/Diagramas_de_Sequência_do_Sistema/UC3.md)
-  - [UC4](./sistema-java/docs/01%20-%20Domínio/Diagramas_de_Sequência_do_Sistema/UC4.md)
-  - [UC5](./sistema-java/docs/01%20-%20Domínio/Diagramas_de_Sequência_do_Sistema/UC5.md)
-- [Diagrama de Classes de Negócios](./sistema-java/docs/01%20-%20Domínio/Diagrama_de_Classes_Negocios.md)
-- Diagramas de Sequência de Sistema:
-  - [UC1](Documentação/03 - Implementação/Diagramas_de_Squência_de_Implementação/UC1.md)
-  - [UC2](Documentação/03 - Implementação/Diagramas_de_Squência_de_Implementação/UC2.md)
-  - [UC3](Documentação/03 - Implementação/Diagramas_de_Squência_de_Implementação/UC3.md)
-  - [UC4](Documentação/03 - Implementação/Diagramas_de_Squência_de_Implementação/UC4.md)
-  - [UC5](Documentação/03 - Implementação/Diagramas_de_Squência_de_Implementação/UC5.md)
-- [Diagrama Componentes](Documentação/03 - Implementação/Diagrama_Componentes.md)
-- [Diagrama de Classes de Implementação](Documentação/03 - Implementação/Diagrama_de_Classes_de_Implementação.md)
-- [Diagrama de pacotes](Documentação/03 - Implementação/Diagrama_Pacotes.md)

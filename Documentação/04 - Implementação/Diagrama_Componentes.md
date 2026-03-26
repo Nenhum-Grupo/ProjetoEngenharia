@@ -18,7 +18,6 @@ O diagrama de componentes mostra **os grandes módulos do sistema** e como os pa
 ```plantuml
 @startuml
 
-
 skinparam packageStyle rectangle
 skinparam linetype ortho
 left to right direction
@@ -26,26 +25,22 @@ left to right direction
 component "Interfaces\n(Inbound Adapters)" {
 
   package "interfaces"
-
 }
 
 component "Application\n(Use Cases)" {
 
   package "application"
-
 }
 
 component "Domain Core" {
 
   package "entities"
   package "ports"
-
 }
 
 component "Infrastructure\n(Outbound Adapters)" {
 
   package "infrastructure"
-
 }
 
 "Interfaces\n(Inbound Adapters)" --> "Application\n(Use Cases)"

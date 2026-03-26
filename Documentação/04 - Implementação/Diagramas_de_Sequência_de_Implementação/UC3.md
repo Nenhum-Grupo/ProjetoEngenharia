@@ -1,5 +1,5 @@
 # Consultar Resumos de Interação na Mídia
-[![](https://img.plantuml.biz/plantuml/svg/bLMzRjim4Du5w1qExb1bCFg3JaPWH57SL80T2tRITAN5gqrK9bMISfEk7VeWdViKVh4UQScHRATe5qEcxlkvuqVgmbYcRRKkmi1y4R9acgt1sCS2wLUB_EWLVgrGvZX1OzWIuq8i9UGeBUfsMKQa8XSbapPZd0kvX7UldocO27alk5t1csx9fNfei6_fHHYmt2eDlKHmnhU_L0-OWJlZXCDWeHwWzr7WDuWoZOOCCIkKX35xH7tMWnUaOXEDR1q6vPCsiJ79YT2g3FLdKJWAJ-mUmW0b1wBUAwIkqSyiHmDHAXUgajoHNw-KiVShOV4vzYkqh5XXegJLgYXGUv74wk9O92xBGkGj_wH0WyxnigWE1MPeghNAbA4L9TcQ6bTpr1kgzWhryx58fhJrJJGDkJx6R4DrRgBTBiWrLbpDi2GXseH7p-t-mlcvQ2Y6mmDS6ZVsjFM8D3wiRzbw2Vr-7zARsz4itlxS_fZISvgayHYkHX0de_by2b7o8Px4Lx5Voj8p1ma35mBe3_quOG39YgqPPy3HrK1qFRg5LsLdHERCnqbicCLw5yB0mud6nsW0GXA05U8xqsubQaDswV25_ITXZJGRgO2qTmKS3n2D266ywG6G6urBTXBJ6DjDvltuxjCKfhFqEhtP3IMRJTrOuidevdRQ7KNT0pw8XT2dGcAYlCbcoezRQvhRzxR1_wCv76eTH69QL2PdDPdvHxPzZCEW8I9E7y015C9TOXIo_MbxZiO1mi33-XrFOw8uxth9gWMTEJNixCYEe6E2CZs09UgcfUWlIKlZCA3whlQSxbcwuwBvzZUT38CK1GE2es0Esn9tw9Rqqzuq33i3m9M1OnCjejOqzt6i0xEZEfd2VThhv6f_LRZZKRk5ah3kx0jpCleN1A3FoHy0)](https://editor.plantuml.com/uml/bLMzRjim4Du5w1qExb1bCFg3JaPWH57SL80T2tRITAN5gqrK9bMISfEk7VeWdViKVh4UQScHRATe5qEcxlkvuqVgmbYcRRKkmi1y4R9acgt1sCS2wLUB_EWLVgrGvZX1OzWIuq8i9UGeBUfsMKQa8XSbapPZd0kvX7UldocO27alk5t1csx9fNfei6_fHHYmt2eDlKHmnhU_L0-OWJlZXCDWeHwWzr7WDuWoZOOCCIkKX35xH7tMWnUaOXEDR1q6vPCsiJ79YT2g3FLdKJWAJ-mUmW0b1wBUAwIkqSyiHmDHAXUgajoHNw-KiVShOV4vzYkqh5XXegJLgYXGUv74wk9O92xBGkGj_wH0WyxnigWE1MPeghNAbA4L9TcQ6bTpr1kgzWhryx58fhJrJJGDkJx6R4DrRgBTBiWrLbpDi2GXseH7p-t-mlcvQ2Y6mmDS6ZVsjFM8D3wiRzbw2Vr-7zARsz4itlxS_fZISvgayHYkHX0de_by2b7o8Px4Lx5Voj8p1ma35mBe3_quOG39YgqPPy3HrK1qFRg5LsLdHERCnqbicCLw5yB0mud6nsW0GXA05U8xqsubQaDswV25_ITXZJGRgO2qTmKS3n2D266ywG6G6urBTXBJ6DjDvltuxjCKfhFqEhtP3IMRJTrOuidevdRQ7KNT0pw8XT2dGcAYlCbcoezRQvhRzxR1_wCv76eTH69QL2PdDPdvHxPzZCEW8I9E7y015C9TOXIo_MbxZiO1mi33-XrFOw8uxth9gWMTEJNixCYEe6E2CZs09UgcfUWlIKlZCA3whlQSxbcwuwBvzZUT38CK1GE2es0Esn9tw9Rqqzuq33i3m9M1OnCjejOqzt6i0xEZEfd2VThhv6f_LRZZKRk5ah3kx0jpCleN1A3FoHy0)
+![](https://www.plantuml.com/plantuml/png/TPF1RjDE4CRlVefHUlYd-YjAg3XLLTGqG1LegPM0Uk4oyGx9YCsksLrNBOY7GHmuyHHvCSQREEwwvLArzVVzlcyyutCVq8LgepF_XKs93ZVWmuCc-Ucuw3wXhnMPWgx9UrpHHFFAG44ca7kaoeN81PTeGevAiLd1oz7ppw_PtB8AQtYHA2xiVUCy6MKP5i4ww4rPeTh-iZr03n-zP6PBUm-zDyvA0wDwS2IyC7M4cwniGre5tDBoa-bFqIXX1PkJ-ymwbr6E8pJgibeeu3rzPeAei20F_PbPsagUJlAP68ukrzQ7spK7IkCE_5SKKAzfAbHdjIONKwR1wKx8f2mr5nZO6hZ21t92dyX_w49N7VYSVBMnkVLSY1etP89TaBiJSQJlV-y4vDO56Q0Tfkv_XNUY8jTfRqLKAJkdKaA2TG-HM_y9PsVS4CRZr3QRDCrSY8RP99MtZVw3mM00KtIELhi1W8s0K8D2ABS_LsomrcJrbc4mtYq6Jg5kxj4TDCf2qRpi-apu3WFjrxZp3CGTAQT0zxmaE3HgCZD5gRCfE9ThPy_Rtt9pakJ1nG4zA88oUV_FTlLMYoIWs_iY8lNvRkUcz3WUYK0kNt-08POyF8pfXzzP_HXsGCDTHikBHvP5Yj3sHo70PUKBTBjL-Jo5z0yXCtNSefgBoXgA0ECrd89c7z39oWyd_pmZwhDe6YHrhWHmbjR8gwNcmevbBuazoPzDnBmYrupIxxoFDbgacQZJs4LmR5RGNsp_c42UGA47LiGeJaMFlMrgivNMFl_dOXFAdj2iuz6Dd8n6SFCE_eUtYvltOadNz_I4NVnU-Hlkoq8fHUelaFtJCpuNSRNHVm40)
 
 ---
 ## Codificação do Diagrama
@@ -13,11 +13,11 @@ skinparam BoxPadding 20
 
 actor "Cidadão" as User
 
-box "View (Presentation Layer)" #MintCream
-participant "CandidatoPerfilView" as View
+box "Frontend" #MintCream
+participant "Frontend Web\n(CandidatoPerfilPage)" as Front
 end box
 
-box "Interfaces (Inbound)" #GhostWhite
+box "Interfaces (Inbound API)" #GhostWhite
 participant "CandidatoDetalheController" as Ctrl
 end box
 
@@ -30,23 +30,17 @@ participant "ConteudoRepository" as Repo <<interface>>
 participant "IAResumoPort" as IA <<interface>>
 end box
 
-' --- INTERAÇÃO INICIAL DE ACESSO (CHAMADA DE API) ---
-User -> Ctrl : Chamada de API (GET /posicionamentos)
-activate Ctrl
+' --- Carregamento inicial da página ---
+User -> Front : acessar página do candidato
+activate Front
+Front --> User : exibe interface inicial
+deactivate Front
 
-Ctrl -> View : inicializarView()
-activate View
-View --> Ctrl : retorno da View
-deactivate View
+' --- Requisição dos resumos de posicionamento ---
+User -> Front : solicitar resumo dos posicionamentos
+activate Front
 
-Ctrl --> User : entrega da View
-deactivate Ctrl
-
-' --- FLUXO ORIGINAL DE PROCESSAMENTO ---
-User -> View : exibirResumoPosicionamentos(candidatoId)
-activate View
-
-View -> Ctrl : verResumoPosicionamentos(candidatoId)
+Front -> Ctrl : GET /api/candidatos/{id}/posicionamentos/resumo
 activate Ctrl
 
 Ctrl -> Service : buscarResumosPosicionamentos(candidatoId)
@@ -65,11 +59,11 @@ deactivate IA
 Service --> Ctrl : String (Resumo dos posicionamentos)
 deactivate Service
 
-Ctrl --> View : String
+Ctrl --> Front : 200 OK + JSON
 deactivate Ctrl
 
-View --> User : renderizar ideias principais
-deactivate View
+Front --> User : renderiza ideias principais
+deactivate Front
 
 @enduml
 ```

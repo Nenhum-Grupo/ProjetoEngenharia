@@ -4,6 +4,7 @@ from app.core.config import settings
 from google.genai import types, errors
 from google import genai
 from time import sleep
+import inspect
 import os
 
 class gemini_handler():
@@ -74,6 +75,9 @@ Retorne a lista reordenada mantendo a redação original. Não adicione comentá
                 return response.text
             except errors.ServerError as e:
                 if tentativa < 2:
+                    metodo_atual = inspect.currentframe().f_code.co_name
+                    print(f"Erro de servidor em: {metodo_atual}. Esperando 5 minutos.")
+
                     sleep(300)
                     continue
                 raise e
@@ -113,6 +117,9 @@ Retorne a lista reordenada mantendo a redação original. Não adicione comentá
                 return response.text
             except errors.ServerError as e:
                 if tentativa < 2:
+                    metodo_atual = inspect.currentframe().f_code.co_name
+                    print(f"Erro de servidor em: {metodo_atual}. Esperando 5 minutos.")
+
                     sleep(300)
                     continue
                 raise e
@@ -149,6 +156,9 @@ Retorne a lista reordenada mantendo a redação original. Não adicione comentá
                 return response.text
             except errors.ServerError as e:
                 if tentativa < 2:
+                    metodo_atual = inspect.currentframe().f_code.co_name
+                    print(f"Erro de servidor em: {metodo_atual}. Esperando 5 minutos.")
+                    
                     sleep(300)
                     continue
                 raise e

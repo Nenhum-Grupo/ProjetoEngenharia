@@ -12,7 +12,7 @@ class gemini_handler():
         self.arquivo = arquivo
 
         self.client = genai.Client(api_key=settings.google_api_key)
-        self.MODEL_ID = "gemini-3.1-flash-lite-preview"
+        self.MODEL_ID = "models/gemini-3.1-flash-lite-preview"
         self.ALT_MODEL_ID = "models/gemini-2.5-flash"
         self.agentes = {
     "analista" : """Você é um Analista de Políticas Públicas. Analise o plano de governo abaixo de forma exaustiva, identificando TODOS os temas abordados e resumindo-os em tópicos. Para cada tópico enontrado no texto, use este formato:
@@ -66,7 +66,7 @@ Retorne a lista reordenada mantendo a redação original. Não adicione comentá
         for tentativa in range(3):
             try:
                 response = self.client.models.generate_content(
-                    model=self.ALT_MODEL_ID,
+                    model=self.MODEL_ID,
                     contents=contents,
                     config=config,
                 )
@@ -109,7 +109,7 @@ Retorne a lista reordenada mantendo a redação original. Não adicione comentá
         for tentativa in range(3):
             try:
                 response = self.client.models.generate_content(
-                    model=self.ALT_MODEL_ID,
+                    model=self.MODEL_ID,
                     contents=contents,
                     config=config,
                 )
@@ -149,7 +149,7 @@ Retorne a lista reordenada mantendo a redação original. Não adicione comentá
         for tentativa in range(3):
             try:
                 response = self.client.models.generate_content(
-                    model=self.ALT_MODEL_ID,
+                    model=self.MODEL_ID,
                     contents=contents,
                     config=config,
                 )

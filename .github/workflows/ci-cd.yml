@@ -45,6 +45,16 @@ jobs:
     needs: detect-changes
     if: needs.detect-changes.outputs.java == 'true'
 
+    services:
+      postgres:
+        image: postgres:18
+        env:
+          POSTGRES_DB: eleicoes_db
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+        ports:
+          - 5432:5432
+          
     steps:
       - uses: actions/checkout@v4
 
@@ -57,6 +67,10 @@ jobs:
       - name: Build + Test Java
         working-directory: 'backend/sistema-java/app/'
         run: mvn clean install
+        env:
+          DB_USER_POSTGRES: postgres
+          DB_URL: jdbc:postgresql://localhost:5432/eleicoes_db
+          DB_PASSWORD_POSTGRES: postgres
 
 
   #3. CI PYTHON COM BUILD E TEST

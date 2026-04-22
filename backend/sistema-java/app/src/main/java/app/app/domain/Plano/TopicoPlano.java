@@ -1,5 +1,6 @@
 package app.app.domain.Plano;
 
+import app.app.domain.Categoria.Categoria;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -18,8 +19,8 @@ public class TopicoPlano {
     @JoinColumn(name = "plano_id")
     private PlanoDeGoverno plano;
 
-    //talvez uma classe para categoria
-    private String categoria;
+    @Enumerated(EnumType.STRING)
+    private Categoria categoria;
     private String resumo;
     private Float indiceDeCoerencia;
 }

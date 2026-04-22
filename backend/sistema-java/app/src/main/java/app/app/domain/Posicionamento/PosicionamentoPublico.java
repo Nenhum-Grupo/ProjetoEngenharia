@@ -1,6 +1,7 @@
 package app.app.domain.Posicionamento;
 
 import app.app.domain.Candidato.Candidato;
+import app.app.domain.Categoria.Categoria;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -18,8 +19,8 @@ public class PosicionamentoPublico {
     @JoinColumn(name = "candidato_id")
     private Candidato candidato;
 
-    //Talvez fazer uma classe com as categorias
-    private String Categoria;
+    @Enumerated(EnumType.STRING)
+    private Categoria categoria;
     private LocalDate data;
 
     //Talvez fazer um enum com as fontes (youtube, Twitter, Instagram...)

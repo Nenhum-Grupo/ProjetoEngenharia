@@ -9,10 +9,10 @@ public class CandidatoSearchCriteria {
         return (root, query, cb) -> cb.equal(root.get("anoDisputado"), anoInput);
     }
     public static Specification<Candidato> nome(String nomeInput){
-        return (root, query, cb) -> cb.like(cb.lower(root.get("nome")), "%" + nomeInput + "%");
+        return (root, query, cb) -> cb.like(cb.lower(root.get("nome")), "%" + nomeInput.toLowerCase() + "%");
     }
     public static Specification<Candidato> partido(String partidoInput){
-        return (root, query, cb) -> cb.equal(root.get("partido"), partidoInput);
+        return (root, query, cb) -> cb.like(cb.lower(root.get("partido")), "%" + partidoInput.toLowerCase() + "%");
     }
     public static Specification<Candidato> cargo(Cargo cargoInput){
         return (root, query, cb) -> cb.equal(root.get("cargo"), cargoInput);

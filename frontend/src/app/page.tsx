@@ -129,11 +129,13 @@ export default function Home() {
               setFiltros((prev) => ({ ...prev, ano: e.target.value }))
             }
           >
-            <option value="">Ano...</option>
-            <option value="2022">2022</option>
-            <option value="2018">2018</option>
-            <option value="2014">2014</option>
-            <option value="2010">2010</option>
+              <option value="2022">2022</option>
+              <option value="2020">2020</option>
+              <option value="2018">2018</option>
+              <option value="2016">2016</option>
+              <option value="2014">2014</option>
+              <option value="2012">2012</option>
+              <option value="2010">2010</option>
           </select>
 
           <select
@@ -196,7 +198,7 @@ export default function Home() {
                   <div className="bg-white rounded-[2.5rem] overflow-hidden shadow-md hover:shadow-2xl transition-all duration-500 border border-slate-100 flex flex-col min-h-[620px]">
                     <div className="relative aspect-[3/4] w-full overflow-hidden bg-slate-200">
                       <img
-                        src={cand.foto_url}
+                        src={cand.linkFoto}
                         className="w-full h-full object-cover object-top contrast-[1.08] brightness-[1.02] saturate-[0.95] [image-rendering:auto]"
                         alt={cand.nome}
                       />

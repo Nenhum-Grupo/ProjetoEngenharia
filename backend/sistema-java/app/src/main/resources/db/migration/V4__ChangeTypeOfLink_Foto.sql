@@ -1,0 +1,1 @@
+ALTER TABLE candidato ALTER COLUMN link_foto TYPE TEXT

@@ -1,0 +1,30 @@
+# Next.js (Frontend)
+node_modules/
+.next/
+out/
+build/
+.DS_Store
+*.pem
+.env*.local
+
+# TypeScript
+next-env.d.ts
+
+# Python (Backend) - Caso o backend esteja na mesma pasta raiz
+__pycache__/
+*.py[cod]
+*$py.class
+venv/
+.venv/
+env/
+.env
+
+# Banco de Dados (SQLite)
+# Como você usa o seed.py para gerar o banco, não precisa subir o .db pro Git
+*.db
+*.sqlite3
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*

@@ -5,7 +5,7 @@ import app.app.application.BuscaCandidato.ConsultaCandidatoService;
 import app.app.domain.Candidato.Candidato;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -18,7 +18,7 @@ public class BuscaCandidatoController {
     @Autowired
     private ConsultaCandidatoService consultaCandidatoService;
 
-    @GetMapping("/candidatos")
+    @PostMapping("/candidatos")
     public ResponseEntity<List<Candidato>> buscarCandidato(@RequestBody BuscarCandidatoDTO buscarCandidatoDTO){
         List<Candidato> candidatoList = this.consultaCandidatoService.listarComCriteria(
                 buscarCandidatoDTO.nome(),

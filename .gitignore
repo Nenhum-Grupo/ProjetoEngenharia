@@ -9,3 +9,6 @@
 *.bak
 *.swp
 *.class
+
+#Local Test
+docker_compose.yml

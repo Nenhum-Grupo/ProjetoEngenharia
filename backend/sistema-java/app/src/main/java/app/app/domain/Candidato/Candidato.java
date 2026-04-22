@@ -1,12 +1,13 @@
 package app.app.domain.Candidato;
 
-import GraficoCategoria.Categoria;
+import app.app.domain.Categoria.CategoriaClassification;
 import app.app.domain.Plano.PlanoDeGoverno;
 import app.app.domain.Posicionamento.PosicionamentoPublico;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Getter
@@ -28,16 +29,15 @@ public class Candidato {
     private Float indiceDeCoerencia;
     private Integer anoDisputado;
 
-    //VER COMO FAZER RELACOES COM ENUM (CATEGORIA PRECISA DE CANDIDATO, INDICEDE APARIÇÃO)
-    //Lista de Categorias
+    @OneToMany(mappedBy = "candidato", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<CategoriaClassification> graficoRadar;
 
-    @OneToOne(mappedBy = "candidato")
+    @OneToOne(mappedBy = "candidato", orphanRemoval = true)
     private PlanoDeGoverno planoDeGoverno;
 
     @Enumerated(EnumType.STRING)
     private CategoriaEspectroPolitico categoriaEspectroPolitico;
 
-    @OneToMany(mappedBy = "candidato")
+    @OneToMany(mappedBy = "candidato", orphanRemoval = true)
     private List<PosicionamentoPublico> posicionamentoPublicoList;
-
 }

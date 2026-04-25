@@ -55,4 +55,10 @@ public class BuscaCandidatoController {
         List<String> cidades = consultaCandidatoService.listarCidades();
         return ResponseEntity.ok(cidades);
     }
+
+    @GetMapping("/candidatos")
+    public ResponseEntity<List<Candidato>> listarTodos() {
+        List<Candidato> candidatos = consultaCandidatoService.listarTodos();
+        return ResponseEntity.ok(candidatos);
+    }
 }

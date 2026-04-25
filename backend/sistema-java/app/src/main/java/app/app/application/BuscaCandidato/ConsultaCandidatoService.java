@@ -60,4 +60,8 @@ public class ConsultaCandidatoService {
        return candidatoRepository.listarCidade();
     }
 
+    public List<Candidato> listarTodos() {
+        return candidatoRepository.listar(Specification.where(null));
+    }
+
 }

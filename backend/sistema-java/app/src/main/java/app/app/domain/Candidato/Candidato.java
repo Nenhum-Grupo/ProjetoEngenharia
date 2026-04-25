@@ -29,6 +29,9 @@ public class Candidato {
     private Float indiceDeCoerencia;
     private Integer anoDisputado;
 
+    private String estado;
+    private String cidade;
+
     @OneToMany(mappedBy = "candidato", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<CategoriaClassification> graficoRadar;
 

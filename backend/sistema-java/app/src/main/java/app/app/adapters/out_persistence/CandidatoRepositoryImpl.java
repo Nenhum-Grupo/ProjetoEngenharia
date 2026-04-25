@@ -19,4 +19,16 @@ public class CandidatoRepositoryImpl implements CandidatoRepository {
     public List<Candidato> listar(Specification<Candidato> spec) {
         return candidatoJpaRepository.findAll(spec);
     }
+
+    @Override
+    public List<Integer> listarAnos() {return candidatoJpaRepository.getAnosDistintos();}
+
+    @Override
+    public List<String> listarPartido() {return candidatoJpaRepository.getPartidosDistintos();}
+
+    @Override
+    public List<String> listarEstado() {return candidatoJpaRepository.getEstadosDistintos();}
+
+    @Override
+    public List<String> listarCidade() {return candidatoJpaRepository.getCidadesDistintos();}
 }

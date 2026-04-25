@@ -7,4 +7,8 @@ import java.util.List;
 
 public interface CandidatoRepository {
     List<Candidato> listar(Specification<Candidato> spec);
+    List<Integer> listarAnos();
+    List<String> listarPartido();
+    List<String> listarEstado();
+    List<String> listarCidade();
 }

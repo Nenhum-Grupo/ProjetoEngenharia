@@ -19,7 +19,7 @@ public class ConsultaCandidatoService {
 
 
     //tratar melhor condicoes de erro e regras de negocio
-    public List<Candidato> listarComCriteria(String nome, Integer ano, String partido, Cargo cargo){
+    public List<Candidato> listarComCriteria(String nome, Integer ano, String partido, Cargo cargo, String estado, String cidade){
         Specification<Candidato> spec = Specification.where(null);
 
         if(nome != null && !nome.isBlank()){
@@ -34,8 +34,30 @@ public class ConsultaCandidatoService {
         if(cargo != null){
             spec = spec.and(CandidatoSearchCriteria.cargo(cargo));
         }
+        if(estado != null){
+            spec = spec.and(CandidatoSearchCriteria.estado(estado));
+        }
+        if(cidade != null){
+            spec = spec.and(CandidatoSearchCriteria.cidade(cidade));
+        }
 
         return this.candidatoRepository.listar(spec);
+    }
+
+    public List<Integer> listarAnos(){
+        return candidatoRepository.listarAnos();
+    }
+
+    public List<String> listarPartidos(){
+        return candidatoRepository.listarPartido();
+    }
+
+    public List<String> listarEstados(){
+        return candidatoRepository.listarEstado();
+    }
+
+    public List<String> listarCidades(){
+       return candidatoRepository.listarCidade();
     }
 
 }

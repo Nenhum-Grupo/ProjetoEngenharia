@@ -2,6 +2,7 @@ package app.app.domain.Posicionamento;
 
 import app.app.domain.Candidato.Candidato;
 import app.app.domain.Categoria.Categoria;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -17,6 +18,7 @@ public class PosicionamentoPublico {
     private Long id;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "candidato_id")
+    @JsonIgnore
     private Candidato candidato;
 
     @Enumerated(EnumType.STRING)

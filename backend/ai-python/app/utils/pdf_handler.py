@@ -2,30 +2,26 @@ import os
 import fitz
 from pathlib import Path
 from app.core.config import settings
+import boto3
 
-#Buscar no Bucket- Definir um dos arquivos para teste
-#Conectar ao Bucket
-#Chamar API para salvar
-DIRETORIO_PDFS = "eleicoesystem-bucket"
-NOME_DO_ARQUIVO = "Eleicoes/2022/Presidente/PlanoGoverno_Jair_Bolsonaro.pdf"
+def PDFManager(bucketName, bucketKey):
+    s3 = boto3.client('s3')
+    response = s3.list_buckets()
+    achado = False
+    for bucket in response['Buckets']:
+        if bucket['Name'] == bucketName:
+            achado = True
+            break
 
-# Ve se tem um bucket com o link recebido
-# pega o conteudo e faz o processo de caracter
-def PDFManager(nome_arquivo: str):
-    caminho_completo = DIRETORIO_PDFS / nome_arquivo
+    if not achado:
+        raise "Erro: bucket especificado não foi encontrado"
 
-    if not os.path.exists(caminho_completo):
-        print(f"❌ Erro: O arquivo '{nome_arquivo}' não foi encontrado na pasta '{DIRETORIO_PDFS}'.")
-        return None
+    response = s3.list_objects(Bucket=bucketName)
+    if NOME_DO_ARQUIVO not in response['Contents']:
+        raise "Erro: key especificada não foi encontrada"
 
-    try:
-        with fitz.open(caminho_completo) as doc:
-            texto = ""
-            for page in doc:
-                texto += page.get_text()
-
-            # Corta em 25.000 caracteres para não estourar os limites da camada gratuita
-            return texto[:25000]
-    except Exception as e:
-        print(f"❌ Erro ao ler o PDF: {e}")
-        return None
+    response = s3.get_object(Bucket=bucketName, Key=bucketKey)
+    content_bytes = response['Body'].read()
+    content_string = content_bytes.decode('utf-8')
+    print(content_string)
+    return content_string

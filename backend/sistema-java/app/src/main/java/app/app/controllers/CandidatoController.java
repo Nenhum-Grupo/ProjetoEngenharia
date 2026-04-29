@@ -1,14 +1,16 @@
 package app.app.controllers;
 
 
+import app.app.DTO.CandidatoDetalhe.CandidatoDetalheDTO;
+import app.app.DTO.CandidatoDetalhe.ResumoDTO;
+import app.app.DTO.CandidatoDetalhe.SaveResumoDTO;
 import app.app.domain.Candidato.Candidato;
+import app.app.domain.Plano.PlanoDeGoverno;
 import app.app.services.CandidatoDetalhe.CandidatoDetalheService;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 public class CandidatoController {
@@ -17,24 +19,20 @@ public class CandidatoController {
     private CandidatoDetalheService candidatoDetalheService;
 
 
-    //Dar um jeito de pegar as outras infos que vem junto -> as listas
-    //Lista de categorias
-    //Plano
-    //Mídias
     @GetMapping("/candidato/{id}")
-    public ResponseEntity<Candidato> getCandidato(@PathVariable Long id){
-        Candidato candidato = candidatoDetalheService.getCandidato(id);
+    public ResponseEntity<CandidatoDetalheDTO> getCandidato(@PathVariable Long id){
+        CandidatoDetalheDTO candidato = candidatoDetalheService.getCandidato(id);
         return ResponseEntity.ok(candidato);
     }
 
     @PostMapping("/resumo")
-    public void salvarOrigemResumo(){
-
+    public void salvarOrigemResumo(@RequestBody SaveResumoDTO resumoDTO) throws JsonProcessingException {
+        candidatoDetalheService.salvarResumo(resumoDTO.id(), resumoDTO.bucketName(), resumoDTO.bucketKey());
     }
 
     @GetMapping("/candidato/{id}/plano")
-    public ResponseEntity<String> getResumoCandidato(){
-        return ResponseEntity.ok("");
+    public ResponseEntity<ResumoDTO> getResumoCandidato(@PathVariable Long id){
+        ResumoDTO p = candidatoDetalheService.getResumo(id);
+        return ResponseEntity.ok(p);
     }
-    //FAZER OS DTOs, MAPPERS
 }

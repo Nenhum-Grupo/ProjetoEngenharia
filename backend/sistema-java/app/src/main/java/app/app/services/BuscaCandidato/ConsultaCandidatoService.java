@@ -44,22 +44,30 @@ public class ConsultaCandidatoService {
         List<Candidato> listCandidato = this.candidatoRepository.findAll(spec);
         List<String> listEstados = new ArrayList<>();
         List<String>  listCidades = new ArrayList<>();
-        if(cargo != null && cargo != Cargo.PRESIDENTE){
-            listEstados = listCandidato.stream().map(Candidato::getEstado).distinct().toList();
+        List<String> listPartidos = listCandidato.stream().map(Candidato::getPartido).toList();
+
+        if(cargo == null){
+            if(estado == null){
+                listEstados = listCandidato.stream().map(Candidato::getEstado).distinct().toList();
+            }
+            else{
+                listCidades = listCandidato.stream().map(Candidato::getCidade).distinct().toList();
+            }
         }
-        if(cargo == Cargo.VEREADOR || cargo == Cargo.PREFEITO){
-            listCidades = listCandidato.stream().map(Candidato::getCidade).distinct().toList();
+        else{
+            if(cargo != Cargo.PRESIDENTE){
+                listEstados = listCandidato.stream().map(Candidato::getEstado).distinct().toList();
+            }
+            if(cargo == Cargo.VEREADOR || cargo == Cargo.PREFEITO){
+                listCidades = listCandidato.stream().map(Candidato::getCidade).distinct().toList();
+            }
         }
 
-        return new RetornarBuscaCandidatoDTO(listCandidato, listEstados, listCidades);
+        return new RetornarBuscaCandidatoDTO(listCandidato, listEstados, listCidades, listPartidos);
     }
 
     public List<Integer> listarAnos(){
         return candidatoRepository.getAnosDistintos();
-    }
-
-    public List<String> listarPartidos(){
-        return candidatoRepository.getPartidosDistintos();
     }
 
 }

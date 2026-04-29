@@ -13,7 +13,7 @@ export default function DetalheCandidato() {
 
   useEffect(() => {
     if (!id) return;
-    fetch(`http://backend:8080/api/candidatos/${id}`)
+    fetch(`http://localhost:8080/candidato/${id}`)
       .then(res => res.json())
       .then(val => {
         setData(val);

@@ -83,6 +83,12 @@ jobs:
     runs-on: ubuntu-latest
     needs: detect-changes
     if: needs.detect-changes.outputs.python == 'true'
+    env:
+      APP_ENV:
+      GOOGLE_API_KEY: ${{secrets.IA_SERVICE_GOOGLE_API_KEY_1}}
+      AWS_ACCESS_KEY_ID: ${{secrets.IA_SERVICE_AWS_AK}}
+      AWS_SECRET_ACCESS_KEY: ${{secrets.IA_SERVICE_SK}}
+      AWS_DEFAULT_REGION: ${{secrets.IA_SERVICE_AWS_REGION}}
 
     steps:
       - uses: actions/checkout@v4

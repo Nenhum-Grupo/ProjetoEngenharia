@@ -36,10 +36,4 @@ public class BuscaCandidatoController {
         List<Integer> anos = consultaCandidatoService.listarAnos();
         return ResponseEntity.ok(anos);
     }
-
-    @GetMapping("/candidatos/partidos")
-    public ResponseEntity<List<String>> getPartidos(){
-        List<String> partidos = consultaCandidatoService.listarPartidos();
-        return ResponseEntity.ok(partidos);
-    }
 }

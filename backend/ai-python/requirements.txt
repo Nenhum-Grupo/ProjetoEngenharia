@@ -5,4 +5,5 @@ python-multipart>=0.0.6
 uvicorn[standard]>=0.24.0
 pytest==8.2.2
 google-genai==1.72.0
+boto3==1.42.97
 pymupdf

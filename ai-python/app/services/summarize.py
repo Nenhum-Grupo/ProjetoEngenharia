@@ -356,7 +356,7 @@ class gemini_handler():
                 s3_client.put_object(
                     Bucket=bucketName,
                     Key="Resumos/Bolsonaro.json",
-                    Body=json.dumps(data, ensure_ascii=False, Indent=2).encode("utf-8"),
+                    Body=json.dumps(data, ensure_ascii=False, indent=2).encode("utf-8"),
                     ContentType="application/json"
                 )
 
@@ -372,5 +372,4 @@ class gemini_handler():
 
 if __name__ == "__main__":
     GH = gemini_handler()
-    json_file = GH.Resumo_plano("eleicoesystem-bucket","Eleicoes/2022/Presidente/PlanoGoverno_Jair_Bolsonaro.pdf")
-    data = json.loads(json_file)
+    GH.Resumo_plano("eleicoesystem-bucket","Eleicoes/2022/Presidente/PlanoGoverno_Jair_Bolsonaro.pdf")

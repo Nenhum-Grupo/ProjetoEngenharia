@@ -1,29 +1,57 @@
 import os
-import fitz  # PyMuPDF
+import io
+import fitz
+from dotenv import load_dotenv
 from pathlib import Path
 from app.core.config import settings
+from botocore.exceptions import ClientError
+import boto3
 
-#TODO - lógica para pegar cada arquivo 
-DIRETORIO_PDFS = Path(settings.upload_dir)
-NOME_DO_ARQUIVO = "13.pdf" 
+load_dotenv()
 
-# Inicializa o novo cliente oficial do Gemini
+def PDFManager(bucketName, bucketKey):
+    s3 = boto3.client('s3')
+    response = s3.list_buckets()
+    achado = False
+    for bucket in response['Buckets']:
+        if bucket['Name'] == bucketName:
+            achado = True
+            break
 
-def PDFManager(nome_arquivo: str):
-    caminho_completo = DIRETORIO_PDFS / nome_arquivo
-
-    if not os.path.exists(caminho_completo):
-        print(f"❌ Erro: O arquivo '{nome_arquivo}' não foi encontrado na pasta '{DIRETORIO_PDFS}'.")
-        return None
+    if not achado:
+        raise "Erro: bucket especificado não foi encontrado"
 
     try:
-        with fitz.open(caminho_completo) as doc:
-            texto = ""
-            for page in doc:
-                texto += page.get_text()
+        s3.head_object(Bucket=bucketName, Key=bucketKey)
+    except ClientError as e:
+        status_code = e.response["ResponseMetadata"]["HTTPStatusCode"]
+        raise status_code
+    
+    
 
-            # Corta em 25.000 caracteres para não estourar os limites da camada gratuita
-            return texto[:25000]
+    response = s3.get_object(Bucket=bucketName, Key=bucketKey)
+    content_bytes = response['Body'].read()
+    # --- INÍCIO DA EXTRAÇÃO DE TEXTO DO PDF ---
+    try:
+        # Transforma os bytes vindos do S3 em um "arquivo virtual" na memória
+        pdf_stream = io.BytesIO(content_bytes)
+        
+        # Abre o PDF a partir da memória
+        doc = fitz.open(stream=pdf_stream, filetype="pdf")
+        
+        texto_extraido = ""
+        
+        # Itera pelas páginas para extrair o texto
+        for pagina in doc:
+            texto_extraido += pagina.get_text()
+            
+        doc.close()
+        
+        if not texto_extraido.strip():
+            print("Aviso: O PDF parece ser composto apenas por imagens (OCR necessário).")
+        
+        print(texto_extraido)
+        return texto_extraido[:25000]
+
     except Exception as e:
-        print(f"❌ Erro ao ler o PDF: {e}")
-        return None
+        raise Exception(f"Erro ao processar a estrutura do PDF: {e}")

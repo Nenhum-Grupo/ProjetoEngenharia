@@ -58,6 +58,11 @@ app/
     └── __init__.py      # SQLAlchemy models 
 ```
 
+# How to test Summarize.py
+```cd ai-python```
+```python -m app.services.summarize```
+
 ## License
 
 This project is licensed under the MIT License.
+

@@ -2,10 +2,10 @@
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-
-from app.core.config import settings
-from app.core.exceptions import setup_exception_handlers
-from app.v1.apis.routes import router as v1_router
+from services.summarize import gemini_handler
+from core.config import settings
+from core.exceptions import setup_exception_handlers
+from v1.apis.routes import router as v1_router
 
 # No lifespan - simple startup
 
@@ -48,8 +48,10 @@ if __name__ == "__main__":
     import uvicorn
 
     uvicorn.run(
-        "app.main:app",
+        "main:app",
         host="0.0.0.0",
         port=8000,
         reload=settings.debug,
     )
+
+

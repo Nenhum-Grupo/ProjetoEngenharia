@@ -140,7 +140,7 @@ jobs:
             
     - name: Login SWR
       run: |
-          docker login -u sa-brazil-1@HPUAAIBJKGWDMOASU94G -p beafe0ad53e9eeddc82f225d83f912a898e5eaff4aa1925290d2f839f740bce1 swr.sa-brazil-1.myhuaweicloud.com
+          sudo docker login -u sa-brazil-1@HPUAAIBJKGWDMOASU94G -p beafe0ad53e9eeddc82f225d83f912a898e5eaff4aa1925290d2f839f740bce1 swr.sa-brazil-1.myhuaweicloud.com
 
     - name: Renomear Imagem
       run: |

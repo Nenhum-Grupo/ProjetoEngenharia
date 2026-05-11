@@ -130,12 +130,6 @@ jobs:
 
     steps:
     - uses: actions/checkout@v4
-    
-    - name: Login to Docker Hub
-      uses: docker/login-action@v4
-      with:
-        username: ${{secrets.DOCKER_HUB_USER}}
-        password: ${{secrets.DOCKER_HUB_TOKEN}}
         
     - name: Build da Imagem Java
       run: |
@@ -144,11 +138,13 @@ jobs:
             -t ${{ secrets.DOCKER_HUB_USER }}/system-eleic:latest \
             ./backend/sistema-java/app
             
-    - name: Push Imagem Java
+    - name: Login SWR
       run: |
-          docker push ${{ secrets.DOCKER_HUB_USER }}/system-eleic:${{ needs.prepare.outputs.tag }}
-          docker push ${{ secrets.DOCKER_HUB_USER }}/system-eleic:latest
+          docker login -u sa-brazil-1@HPUAAIBJKGWDMOASU94G -p beafe0ad53e9eeddc82f225d83f912a898e5eaff4aa1925290d2f839f740bce1 swr.sa-brazil-1.myhuaweicloud.com
 
+    - name: Push Image
+      run: |
+          sudo docker push swr.sa-brazil-1.myhuaweicloud.com/experimental/system-eleic:latest
 
 
   #6. BUILD IMAGEM DE PYTHON E PUBLICAR NO DOCKER HUB

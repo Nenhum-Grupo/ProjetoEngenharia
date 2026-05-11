@@ -142,6 +142,9 @@ jobs:
       run: |
           docker login -u sa-brazil-1@HPUAAIBJKGWDMOASU94G -p beafe0ad53e9eeddc82f225d83f912a898e5eaff4aa1925290d2f839f740bce1 swr.sa-brazil-1.myhuaweicloud.com
 
+    - name: Renomear Imagem
+      run: |
+          docker tag system-eleic:latest swr.sa-brazil-1.myhuaweicloud.com/experimental/system-eleic:latest
     - name: Push Image
       run: |
           sudo docker push swr.sa-brazil-1.myhuaweicloud.com/experimental/system-eleic:latest

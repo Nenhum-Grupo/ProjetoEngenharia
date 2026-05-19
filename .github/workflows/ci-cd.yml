@@ -296,7 +296,7 @@ jobs:
             --arg region "$AWS_REGION" \
             '{
               commands: [
-                "set -euo pipefail",
+                "set -eu",,
                 "APP_DIR=/opt/system-eleic",
                 "cd $APP_DIR",
   

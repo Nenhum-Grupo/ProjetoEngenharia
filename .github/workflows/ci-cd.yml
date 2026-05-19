@@ -268,6 +268,8 @@ jobs:
     runs-on: ubuntu-latest
     needs:
       - terraform
+      - build-front-image
+      - build-java-image
   
     env:
       AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY }}
@@ -278,31 +280,41 @@ jobs:
       APP_SECRET_ID: ${{ needs.terraform.outputs.app_secret_id }}
   
     steps:
+      - name: Validate deploy inputs
+        run: |
+          test -n "$INSTANCE_ID" || (echo "INSTANCE_ID vazio" && exit 1)
+          test -n "$APP_SECRET_ID" || (echo "APP_SECRET_ID vazio" && exit 1)
+          test -n "$AWS_REGION" || (echo "AWS_REGION vazio" && exit 1)
+  
       - name: Deploy through SSM
         run: |
           echo "Deploying to instance: $INSTANCE_ID"
+          echo "Using secret: $APP_SECRET_ID"
   
-          cat > ssm-params.json <<EOF
-          {
-            "commands": [
-              "set -euo pipefail",
-              "APP_DIR=/opt/system-eleic",
-              "cd \\$APP_DIR",
+          jq -n \
+            --arg secret_id "$APP_SECRET_ID" \
+            --arg region "$AWS_REGION" \
+            '{
+              commands: [
+                "set -euo pipefail",
+                "APP_DIR=/opt/system-eleic",
+                "cd $APP_DIR",
   
-              "SECRET_JSON=\\$(aws secretsmanager get-secret-value --secret-id '$APP_SECRET_ID' --region '$AWS_REGION' --query SecretString --output text)",
+                ("SECRET_JSON=$(aws secretsmanager get-secret-value --secret-id " + $secret_id + " --region " + $region + " --query SecretString --output text)"),
   
-              "export DB_URL=\\$(echo \\\"\\$SECRET_JSON\\\" | jq -r '.DB_URL')",
-              "export DB_USER_POSTGRES=\\$(echo \\\"\\$SECRET_JSON\\\" | jq -r '.DB_USER_POSTGRES')",
-              "export DB_PASSWORD_POSTGRES=\\$(echo \\\"\\$SECRET_JSON\\\" | jq -r '.DB_PASSWORD_POSTGRES')",
-              "export AWS_REGION=\\$(echo \\\"\\$SECRET_JSON\\\" | jq -r '.AWS_REGION')",
-              "export AWS_ACCESS_KEY=\\$(echo \\\"\\$SECRET_JSON\\\" | jq -r '.AWS_ACCESS_KEY')",
-              "export AWS_SECRET_KEY=\\$(echo \\\"\\$SECRET_JSON\\\" | jq -r '.AWS_SECRET_KEY')",
+                "export DB_URL=$(echo \"$SECRET_JSON\" | jq -r \".DB_URL\")",
+                "export DB_USER_POSTGRES=$(echo \"$SECRET_JSON\" | jq -r \".DB_USER_POSTGRES\")",
+                "export DB_PASSWORD_POSTGRES=$(echo \"$SECRET_JSON\" | jq -r \".DB_PASSWORD_POSTGRES\")",
+                "export AWS_REGION=$(echo \"$SECRET_JSON\" | jq -r \".AWS_REGION\")",
+                "export AWS_ACCESS_KEY=$(echo \"$SECRET_JSON\" | jq -r \".AWS_ACCESS_KEY\")",
+                "export AWS_SECRET_KEY=$(echo \"$SECRET_JSON\" | jq -r \".AWS_SECRET_KEY\")",
   
-              "sudo -E docker compose pull",
-              "sudo -E docker compose up -d"
-            ]
-          }
-          EOF
+                "sudo -E docker compose pull",
+                "sudo -E docker compose up -d"
+              ]
+            }' > ssm-params.json
+  
+          cat ssm-params.json
   
           COMMAND_ID=$(aws ssm send-command \
             --instance-ids "$INSTANCE_ID" \

@@ -277,7 +277,7 @@ jobs:
       AWS_REGION: ${{ secrets.AWS_REGION }}
   
       INSTANCE_ID: ${{ needs.terraform.outputs.instance_id }}
-      APP_SECRET_ID: ${{ needs.terraform.outputs.app_secret_id }}
+      APP_SECRET_ID: system-eleic-2/app
   
     steps:
       - name: Validate deploy inputs

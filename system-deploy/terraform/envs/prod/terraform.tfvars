@@ -72,7 +72,7 @@ ebs_size      = 10
 # =========================
 
 db_type = "db.t4g.micro"
-db_storage     = 10
+db_storage     = 20
 db_max_storage = 30
 
 # =========================

@@ -50,7 +50,7 @@ type CandidatosResponse = {
   listPartidos: string[];
 };
 
-const API_URL = 'http://localhost:8080';
+const API_URL = process.env.NEXT_PUBLIC_BACKEND_URL;
 
 const CARGOS_COM_ESTADO: Cargo[] = [
   'GOVERNADOR',
@@ -189,7 +189,7 @@ export default function Home() {
 
   const fetchAnos = async () => {
     try {
-      const anosResponse = await fetch(`${API_URL}/candidatos/anos`);
+      const anosResponse = await fetch(`${API_URL}/api/candidatos/anos`);
 
       if (!anosResponse.ok) {
         throw new Error(`Erro ao buscar anos: ${anosResponse.status}`);
@@ -216,7 +216,7 @@ export default function Home() {
 
       console.log('Body enviado:', body);
 
-      const res = await fetch(`${API_URL}/candidatos`, {
+      const res = await fetch(`${API_URL}/api/candidatos`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

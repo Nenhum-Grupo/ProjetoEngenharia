@@ -25,7 +25,6 @@ public class CandidatoController {
         return ResponseEntity.ok(candidato);
     }
 
-
     @PostMapping("/resumo")
     public void salvarOrigemResumo(@RequestBody SaveResumoDTO resumoDTO) throws JsonProcessingException {
         candidatoDetalheService.salvarResumo(resumoDTO.id(), resumoDTO.bucketName(), resumoDTO.bucketKey());

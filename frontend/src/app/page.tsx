@@ -81,6 +81,7 @@ const cargoPermiteEstado = (cargo: CargoFiltro) => {
   return CARGOS_COM_ESTADO.includes(cargo);
 };
 
+
 const cargoNecessitaCidade = (cargo: CargoFiltro) => {
   if (cargo === '') return false;
 

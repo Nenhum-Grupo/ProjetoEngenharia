@@ -115,7 +115,7 @@ resource "aws_instance" "ec2-instance"{
       delete_on_termination = true
     }
 
-    user_data = templatefile("../../userdata.tpl", {
+    user_data = templatefile("../../../userdata.tpl", {
         backend_image = var.backend_image
         frontend_image = var.frontend_image
         backend_port = var.backend_port

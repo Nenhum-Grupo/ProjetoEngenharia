@@ -19,7 +19,6 @@ public class CandidatoController {
     @Autowired
     private CandidatoDetalheService candidatoDetalheService;
 
-
     @GetMapping("/candidato/{id}")
     public ResponseEntity<CandidatoDetalheDTO> getCandidato(@PathVariable Long id){
         CandidatoDetalheDTO candidato = candidatoDetalheService.getCandidato(id);

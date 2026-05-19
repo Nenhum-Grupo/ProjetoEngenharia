@@ -15,6 +15,8 @@ import {
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
+const API_URL = process.env.NEXT_PUBLIC_BACKEND_URL;
+
 export default function DetalheCandidato() {
   const params = useParams();
   const id = params?.id;
@@ -30,7 +32,7 @@ export default function DetalheCandidato() {
     setLoading(true);
     const candidatoId = Array.isArray(id) ? id[0] : id;
 
-    fetch(`http://localhost:8080/candidato/${candidatoId}`)
+    fetch(`${API_URL}/api/candidato/${candidatoId}`)
       .then(res => {
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
         return res.json();

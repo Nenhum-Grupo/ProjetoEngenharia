@@ -89,9 +89,9 @@ jobs:
     env:
       APP_ENV:
       GOOGLE_API_KEY: ${{secrets.IA_SERVICE_GOOGLE_API_KEY_1}}
-      AWS_ACCESS_KEY_ID: ${{secrets.IA_SERVICE_AWS_AK}}
-      AWS_SECRET_ACCESS_KEY: ${{secrets.IA_SERVICE_SK}}
-      AWS_DEFAULT_REGION: ${{secrets.IA_SERVICE_AWS_REGION}}
+      AWS_ACCESS_KEY_ID: ${{secrets.AWS_ACCESS_KEY}}
+      AWS_SECRET_ACCESS_KEY: ${{secrets.AWS_SECRET_KEY}}
+      AWS_DEFAULT_REGION: ${{secrets.AWS_REGION}}
 
     steps:
       - uses: actions/checkout@v4
@@ -208,4 +208,113 @@ jobs:
           docker push ${{ secrets.DOCKER_HUB_USER_FRONT }}/frontend-tcc:${{ needs.prepare.outputs.tag }}
           docker push ${{ secrets.DOCKER_HUB_USER_FRONT }}/frontend-tcc:latest
 
+
+  #8. TERRAFORM EXECUTION
+  terraform:
+    runs-on: ubuntu-latest
+    needs: [build-front-image, build-python-image, build-java-image]
+    if: github.event_name == 'merge_group'
+
+    outputs:
+      instance_id: ${{ steps.tf_outputs.outputs.instance_id }}
+      app_secret_id: ${{ steps.tf_outputs.outputs.app_secret_id }}
+
+    env:
+      AWS_ACCESS_KEY_ID: ${{secrets.AWS_ACCESS_KEY}}
+      AWS_SECRET_ACCESS_KEY: ${{secrets.AWS_SECRET_KEY}}
+      
+      TF_VAR_aws_region: ${{secrets.AWS_REGION}}
+      TF_VAR_db_name: ${{secrets.DB_NAME}}
+      TF_VAR_db_username: ${{secrets.DB_USERNAME}}
+      TF_VAR_db_password: ${{secrets.DB_PASSWORD}}
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Setup Terraform
+      uses: hashicorp/setup-terraform@v3
+
+    - name: Terraform Init
+      working-directory: system-deploy/terraform/envs/prod
+      run: terraform init
+
+    - name: Terraform Validate
+      working-directory: system-deploy/terraform/envs/prod
+      run: terraform validate
+
+    - name: Terraform Apply
+      working-directory: system-deploy/terraform/envs/prod
+      run: terraform apply -auto-approve
+
+    - name: Get EC2 instance ID
+      id: tf_outputs
+      working-directory: system-deploy/terraform/envs/prod
+      run: |
+        echo "instance_id=$(terraform output -raw ec2_instance_id)" >> "$GITHUB_OUTPUT"
+        echo "app_secret_id=$(terraform output -raw app_secret_id)" >> "$GITHUB_OUTPUT"
+
+
+
+
+  #9. Deploy 
+  deploy:
+    name: Deploy Application
+    runs-on: ubuntu-latest
+    needs:
+      - terraform
+  
+    env:
+      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      AWS_REGION: ${{ secrets.AWS_REGION }}
+  
+      INSTANCE_ID: ${{ needs.terraform.outputs.instance_id }}
+      APP_SECRET_ID: ${{ needs.terraform.outputs.app_secret_id }}
+  
+    steps:
+      - name: Deploy through SSM
+        run: |
+          echo "Deploying to instance: $INSTANCE_ID"
+  
+          cat > ssm-params.json <<EOF
+          {
+            "commands": [
+              "set -euo pipefail",
+              "APP_DIR=/opt/system-eleic",
+              "cd \\$APP_DIR",
+  
+              "SECRET_JSON=\\$(aws secretsmanager get-secret-value --secret-id '$APP_SECRET_ID' --region '$AWS_REGION' --query SecretString --output text)",
+  
+              "export DB_URL=\\$(echo \\\"\\$SECRET_JSON\\\" | jq -r '.DB_URL')",
+              "export DB_USER_POSTGRES=\\$(echo \\\"\\$SECRET_JSON\\\" | jq -r '.DB_USER_POSTGRES')",
+              "export DB_PASSWORD_POSTGRES=\\$(echo \\\"\\$SECRET_JSON\\\" | jq -r '.DB_PASSWORD_POSTGRES')",
+              "export AWS_REGION=\\$(echo \\\"\\$SECRET_JSON\\\" | jq -r '.AWS_REGION')",
+              "export BACKEND_URL=\\$(echo \\\"\\$SECRET_JSON\\\" | jq -r '.DNS_NAME')",
+  
+              "sudo -E docker compose pull",
+              "sudo -E docker compose up -d",
+            ]
+          }
+          EOF
+  
+          COMMAND_ID=$(aws ssm send-command \
+            --instance-ids "$INSTANCE_ID" \
+            --document-name "AWS-RunShellScript" \
+            --comment "Deploy system-eleic application" \
+            --parameters file://ssm-params.json \
+            --query "Command.CommandId" \
+            --output text)
+  
+          echo "Command ID: $COMMAND_ID"
+  
+          aws ssm wait command-executed \
+            --command-id "$COMMAND_ID" \
+            --instance-id "$INSTANCE_ID"
+  
+          aws ssm get-command-invocation \
+            --command-id "$COMMAND_ID" \
+            --instance-id "$INSTANCE_ID" \
+            --query "{Status:Status,Stdout:StandardOutputContent,Stderr:StandardErrorContent}" \
+            --output json
+      
   

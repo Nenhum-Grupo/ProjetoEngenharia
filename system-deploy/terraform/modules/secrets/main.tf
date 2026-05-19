@@ -3,7 +3,7 @@
 //===============
 
 resource "aws_secretsmanager_secret" "app_secrets" {
-  name        = "system-eleic/app"
+  name        = "system-eleic-2/app"
 }
 
 resource "aws_secretsmanager_secret_version" "app_secrets_value" {

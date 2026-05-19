@@ -12,6 +12,7 @@ resource "aws_vpc" "main_project" {
 resource "aws_subnet" "public_subnet" {
     vpc_id = aws_vpc.main_project.id
     cidr_block = var.public_subnet_cidr
+    availability_zone = var.availability_zone_1
     tags = {
         Name = var.public_subnet_name
     }
@@ -20,6 +21,7 @@ resource "aws_subnet" "public_subnet" {
 resource "aws_subnet" "public_subnet2" {
     vpc_id = aws_vpc.main_project.id
     cidr_block = var.public_subnet2_cidr
+    availability_zone = var.availability_zone_2
     tags = {
         Name = var.public_subnet2_name
     }

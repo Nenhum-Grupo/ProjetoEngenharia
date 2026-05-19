@@ -13,6 +13,7 @@ import java.util.List;
 @RequestMapping("/api")
 public class BuscaCandidatoController {
 
+
     @Autowired
     private ConsultaCandidatoService consultaCandidatoService;
 

@@ -62,6 +62,7 @@ const CARGOS_COM_ESTADO: Cargo[] = [
   'VEREADOR',
 ];
 
+
 const CARGOS_COM_CIDADE: Cargo[] = ['PREFEITO', 'VEREADOR'];
 
 const CARGO_LABEL: Record<Cargo, string> = {

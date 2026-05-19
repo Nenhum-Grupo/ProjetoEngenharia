@@ -6,10 +6,12 @@ exec > >(tee /var/log/user-data.log | logger -t user-data -s 2>/dev/console) 2>&
 echo "Starting EC2 bootstrap..."
 
 echo "Installing base dependencies..."
+export DEBIAN_FRONTEND=noninteractive
+
 apt-get update -y
 apt-get install -y ca-certificates curl gnupg unzip jq
 
-echo "Installing Docker official repository..."
+echo "Installing Docker repository..."
 install -m 0755 -d /etc/apt/keyrings
 
 if [ ! -f /etc/apt/keyrings/docker.gpg ]; then
@@ -43,7 +45,7 @@ echo "Creating app directory..."
 mkdir -p /opt/system-eleic
 
 echo "Creating docker-compose.yml..."
-cat > /opt/system-eleic/docker-compose.yml <<EOF
+cat > /opt/system-eleic/docker-compose.yml <<'EOF_COMPOSE'
 services:
   backend:
     image: ${backend_image}
@@ -52,12 +54,12 @@ services:
     ports:
       - "${backend_port}:8080"
     environment:
-      DB_URL: "\${DB_URL}"
-      DB_USER_POSTGRES: "\${DB_USER_POSTGRES}"
-      DB_PASSWORD_POSTGRES: "\${DB_PASSWORD_POSTGRES}"
-      AWS_REGION: "\${AWS_REGION}"
-      AWS_ACCESS_KEY: "\${AWS_ACCESS_KEY}"
-      AWS_SECRET_KEY: "\${AWS_SECRET_KEY}"
+      DB_URL: "$${DB_URL}"
+      DB_USER_POSTGRES: "$${DB_USER_POSTGRES}"
+      DB_PASSWORD_POSTGRES: "$${DB_PASSWORD_POSTGRES}"
+      AWS_REGION: "$${AWS_REGION}"
+      AWS_ACCESS_KEY: "$${AWS_ACCESS_KEY}"
+      AWS_SECRET_KEY: "$${AWS_SECRET_KEY}"
 
   frontend:
     image: ${frontend_image}
@@ -67,10 +69,12 @@ services:
       - "${frontend_port}:3000"
     depends_on:
       - backend
-EOF
+EOF_COMPOSE
 
 echo "Bootstrap finished."
 
 docker --version
 docker compose version
 aws --version
+ls -la /opt/system-eleic
+cat /opt/system-eleic/docker-compose.yml

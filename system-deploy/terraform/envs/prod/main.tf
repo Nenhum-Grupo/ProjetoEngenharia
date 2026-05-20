@@ -40,7 +40,6 @@ module "compute" {
   instance_type = var.instance_type
 
   private_subnet_id = module.network.private_subnet_id
-  bucket_name = module.database.bucket_name
 
   backend_target_group_arn = module.network.target_group_backend_arn
   frontend_target_group_arn = module.network.target_group_frontend_arn

@@ -70,6 +70,8 @@ module "database" {
 
   db_storage = var.db_storage
   db_max_storage = var.db_max_storage
+
+  s3_bucket = var.s3_bucket
 }
 
 module "secrets" {

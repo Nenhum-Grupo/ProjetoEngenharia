@@ -2,7 +2,6 @@ variable "instance_type" {
     type = string
 }
 
-
 variable "ebs_size" {
     type = number
 }
@@ -24,10 +23,6 @@ variable "backend_target_group_arn" {
 }
 
 variable "frontend_target_group_arn" {
-    type = string
-}
-
-variable "bucket_name" {
     type = string
 }
 

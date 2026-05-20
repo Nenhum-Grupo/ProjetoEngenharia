@@ -11,6 +11,10 @@ variable "ec2_public_key" {
     type = string
 }
 
+variable "s3_bucket" {
+  type        = string
+}
+
 variable "private_subnet_id" {
     type = string
 }

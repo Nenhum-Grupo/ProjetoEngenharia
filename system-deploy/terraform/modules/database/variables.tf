@@ -10,6 +10,9 @@ variable "db_name" {
     type = string
 }
 
+variable "s3_bucket" {
+  type        = string
+}
 
 variable "subnet1" {
     type = string

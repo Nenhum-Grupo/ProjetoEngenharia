@@ -47,6 +47,8 @@ module "compute" {
   ebs_size = var.ebs_size
   ec2_public_key = var.ec2_public_key
 
+  s3_bucket = var.s3_bucket
+
   backend_image = var.backend_image
   frontend_image = var.frontend_image
   backend_port = var.backend_port

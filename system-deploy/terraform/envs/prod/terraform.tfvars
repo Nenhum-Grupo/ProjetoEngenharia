@@ -65,7 +65,7 @@ backend_port  = 8080
 # =========================
 
 instance_type = "t3.small"
-ebs_size      = 10
+ebs_size      = 30
 
 # =========================
 # Database / RDS

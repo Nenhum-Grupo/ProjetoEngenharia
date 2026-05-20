@@ -1,248 +1,561 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
-import { useParams, useRouter } from 'next/navigation';
-import { 
-  ChevronLeft, 
-  ShieldCheck, 
-  Award, 
-  Plus, 
-  Minus, 
-  Layout, 
-  TextQuote, 
-  BarChart3, 
-  Target 
-} from 'lucide-react';
-import { motion, AnimatePresence } from 'framer-motion';
+  import React, { useEffect, useMemo, useState } from 'react';
+  import { useParams, useRouter } from 'next/navigation';
+  import {
+    ChevronLeft,
+    ShieldCheck,
+    Award,
+    Plus,
+    Minus,
+    Layout,
+    TextQuote,
+    BarChart3,
+    Target,
+  } from 'lucide-react';
+  import { motion, AnimatePresence } from 'framer-motion';
 
-const API_URL = process.env.NEXT_PUBLIC_BACKEND_URL;
+  const API_URL = process.env.NEXT_PUBLIC_BACKEND_URL;
 
-export default function DetalheCandidato() {
-  const params = useParams();
-  const id = params?.id;
-  const router = useRouter();
-
-  const [data, setData] = useState<any>(null);
-  const [loading, setLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState('principal');
-  const [expandedTopic, setExpandedTopic] = useState<number | null>(null);
-
-  useEffect(() => {
-    if (!id) return;
-    setLoading(true);
-    const candidatoId = Array.isArray(id) ? id[0] : id;
-
-    fetch(`${API_URL}/api/candidato/${candidatoId}`)
-      .then(res => {
-        if (!res.ok) throw new Error(`HTTP ${res.status}`);
-        return res.json();
-      })
-      .then(val => {
-        console.log("Dados da API:", val); // Verifique a estrutura no F12 do navegador
-        setData(val);
-        setLoading(false);
-      })
-      .catch(err => {
-        console.error('Erro ao buscar candidato:', err);
-        setLoading(false);
-      });
-  }, [id]);
-
-  if (loading) return (
-    <div className="min-h-screen bg-[#F8FAFC] flex items-center justify-center">
-      <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-600" />
-    </div>
-  );
-
-  if (!data) return (
-    <div className="p-20 text-center text-slate-500 font-bold">Candidato não encontrado.</div>
-  );
-
-  // LÓGICA DE EXTRAÇÃO DOS TÓPICOS:
-  // Tenta pegar de data.topicos ou de data.resumo.topicos (baseado no ResumoDTO.java)
-  const listaTopicos = data.topicos || data.resumo?.topicos || [];
-
-  const imageSrc = data.linkFoto
-    ? data.linkFoto.startsWith('data:') ? data.linkFoto : `data:image/jpeg;base64,${data.linkFoto}`
-    : null;
-
-  const tabs = [
-    { id: 'principal', label: 'Principal', icon: <Layout size={18} /> },
-    { id: 'topicos', label: 'Resumo por Tópicos', icon: <TextQuote size={18} /> },
-    { id: 'espectro', label: 'Espectro Político', icon: <BarChart3 size={18} /> },
-    { id: 'coerencia', label: 'Índice de Coerência', icon: <Target size={18} /> },
+  const CATEGORIAS = [
+    {
+      key: 'RELACOES_INTERNACIONAIS',
+      label: 'Relações Internacionais',
+    },
+    {
+      key: 'LIBERDADE_DEMOCRACIA',
+      label: 'Liberdade e Democracia',
+    },
+    {
+      key: 'SISTEMA_POLITICO',
+      label: 'Sistema Político',
+    },
+    {
+      key: 'ECONOMIA',
+      label: 'Economia',
+    },
+    {
+      key: 'BEM_ESTAR_QUALIDADE_DE_VIDA',
+      label: 'Bem-estar e Qualidade de Vida',
+    },
+    {
+      key: 'ESTRUTURA_SOCIAL',
+      label: 'Estrutura Social',
+    },
+    {
+      key: 'GRUPOS_SOCIAIS',
+      label: 'Grupos Sociais',
+    },
   ];
 
-  return (
-    <main className="min-h-screen bg-[#F8FAFC] pb-32 font-sans">
-      <nav className="bg-white border-b border-slate-200 sticky top-0 z-50">
-        <div className="max-w-6xl mx-auto px-6 h-16 flex items-center">
-          <button
-            onClick={() => router.back()}
-            className="group flex items-center gap-2 text-slate-600 hover:text-blue-600 font-bold transition-all"
-          >
-            <ChevronLeft size={20} className="group-hover:-translate-x-1 transition-transform" />
-            Voltar para a lista
-          </button>
+  function getCategoriaKey(categoria: any) {
+    if (!categoria) return '';
+
+    let categoriaKey = '';
+
+    if (typeof categoria === 'string') {
+      categoriaKey = categoria;
+    } else {
+      categoriaKey = categoria.nome || categoria.name || categoria.key || '';
+    }
+
+    // Correção defensiva caso o backend ainda mande o enum escrito errado
+    if (categoriaKey === 'GRUPOS_SOCIAIAS') {
+      return 'GRUPOS_SOCIAIS';
+    }
+
+    return categoriaKey;
+  }
+
+  export default function DetalheCandidato() {
+    const params = useParams();
+    const id = params?.id;
+    const router = useRouter();
+
+    const [data, setData] = useState<any>(null);
+    const [loading, setLoading] = useState(true);
+    const [activeTab, setActiveTab] = useState('principal');
+    const [expandedTopic, setExpandedTopic] = useState<string | null>(null);
+    const [expandedProposal, setExpandedProposal] = useState<string | null>(null);
+
+    useEffect(() => {
+      if (!id) return;
+
+      setLoading(true);
+
+      const candidatoId = Array.isArray(id) ? id[0] : id;
+
+      fetch(`${API_URL}/api/candidato/${candidatoId}`)
+        .then((res) => {
+          if (!res.ok) throw new Error(`HTTP ${res.status}`);
+          return res.json();
+        })
+        .then((val) => {
+          console.log('Dados da API:', val);
+          setData(val);
+          setLoading(false);
+        })
+        .catch((err) => {
+          console.error('Erro ao buscar candidato:', err);
+          setLoading(false);
+        });
+    }, [id]);
+
+    const listaTopicos = useMemo(() => {
+      if (!data) return [];
+
+      return (
+        data.topicos ||
+        data.resumo?.topicos ||
+        data.resumo?.topicoPlanoList ||
+        data.plano?.topicos ||
+        data.planoDeGoverno?.topicos ||
+        []
+      );
+    }, [data]);
+
+    const topicosNormalizados = useMemo(() => {
+      return CATEGORIAS.map((categoria) => {
+        const topicoEncontrado = listaTopicos.find((topico: any) => {
+          return getCategoriaKey(topico.categoria) === categoria.key;
+        });
+
+        const propostas =
+          topicoEncontrado?.propostaPlanos ||
+          topicoEncontrado?.propostas ||
+          [];
+
+        return {
+          categoriaKey: categoria.key,
+          categoriaLabel: categoria.label,
+          resumo:
+            topicoEncontrado?.resumo ||
+            topicoEncontrado?.resumoTopico ||
+            '',
+          quantidadePropostas:
+            topicoEncontrado?.quantidadePropostas ??
+            topicoEncontrado?.numeroDePropostas ??
+            propostas.length ??
+            0,
+          propostas,
+        };
+      });
+    }, [listaTopicos]);
+
+    const totalPropostas = useMemo(() => {
+      return topicosNormalizados.reduce((total, topico) => {
+        return total + Number(topico.quantidadePropostas || 0);
+      }, 0);
+    }, [topicosNormalizados]);
+
+    if (loading) {
+      return (
+        <div className="min-h-screen bg-[#F8FAFC] flex items-center justify-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-600" />
         </div>
-      </nav>
+      );
+    }
 
-      <div className="max-w-6xl mx-auto px-6 py-10">
-        {/* HERO CARD */}
-        <div className="relative w-full min-h-[400px] rounded-[3.5rem] overflow-hidden shadow-2xl mb-12 bg-slate-900 flex items-center">
-          <div className="absolute inset-0 opacity-30 bg-slate-500" />
-          <div className="relative z-10 w-full flex flex-col md:flex-row items-center px-8 md:px-16 gap-12">
-            <div className="h-[300px] md:h-[350px] aspect-[3/4] rounded-3xl overflow-hidden border-4 border-white/10 shadow-2xl shrink-0">
-              {imageSrc ? (
-                <img src={imageSrc} className="w-full h-full object-cover" alt={data.nome} />
-              ) : (
-                <div className="w-full h-full bg-slate-700 flex items-center justify-center text-slate-400">Sem foto</div>
-              )}
-            </div>
-
-            <div className="flex-1 text-center md:text-left">
-              <div className="inline-flex items-center gap-2 bg-blue-600 text-white text-[11px] font-black px-4 py-1.5 rounded-full uppercase tracking-widest mb-6">
-                <ShieldCheck size={14} /> Candidato Oficial
-              </div>
-              <h1 className="text-4xl md:text-6xl font-black text-white mb-4">{data.nome}</h1>
-              <div className="flex flex-wrap items-center justify-center md:justify-start gap-4 text-blue-200/80 font-bold text-lg uppercase">
-                <span className="text-white">{data.partido}</span>
-                <span className="w-1.5 h-1.5 bg-blue-500 rounded-full" />
-                <span>{data.cargo}</span>
-                <span className="w-1.5 h-1.5 bg-blue-500 rounded-full" />
-                <span>{data.ano ?? '2022'}</span>
-              </div>
-            </div>
-          </div>
+    if (!data) {
+      return (
+        <div className="p-20 text-center text-slate-500 font-bold">
+          Candidato não encontrado.
         </div>
+      );
+    }
 
-        {/* ABAS */}
-        <div className="flex flex-wrap gap-2 mb-8 border-b border-slate-200 pb-4">
-          {tabs.map((tab) => (
+    const imageSrc = data.linkFoto
+      ? data.linkFoto.startsWith('data:')
+        ? data.linkFoto
+        : `data:image/jpeg;base64,${data.linkFoto}`
+      : null;
+
+    const tabs = [
+      { id: 'principal', label: 'Principal', icon: <Layout size={18} /> },
+      { id: 'topicos', label: 'Resumo por Tópicos', icon: <TextQuote size={18} /> },
+      { id: 'espectro', label: 'Espectro Político', icon: <BarChart3 size={18} /> },
+      { id: 'coerencia', label: 'Índice de Coerência', icon: <Target size={18} /> },
+    ];
+
+    return (
+      <main className="min-h-screen bg-[#F8FAFC] pb-32 font-sans">
+        <nav className="bg-white border-b border-slate-200 sticky top-0 z-50">
+          <div className="max-w-6xl mx-auto px-6 h-16 flex items-center">
             <button
-              key={tab.id}
-              onClick={() => setActiveTab(tab.id)}
-              className={`flex items-center gap-2 px-6 py-3 rounded-full font-bold transition-all ${
-                activeTab === tab.id 
-                ? 'bg-blue-600 text-white shadow-lg shadow-blue-200' 
-                : 'text-slate-500 hover:bg-slate-100'
-              }`}
+              onClick={() => router.back()}
+              className="group flex items-center gap-2 text-slate-600 hover:text-blue-600 font-bold transition-all"
             >
-              {tab.icon}
-              {tab.label}
+              <ChevronLeft
+                size={20}
+                className="group-hover:-translate-x-1 transition-transform"
+              />
+              Voltar para a lista
             </button>
-          ))}
-        </div>
+          </div>
+        </nav>
 
-        {/* CONTEÚDO */}
-        <AnimatePresence mode="wait">
-          <motion.div
-            key={activeTab}
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -10 }}
-            transition={{ duration: 0.2 }}
-          >
-            {activeTab === 'principal' && (
-              <div className="grid md:grid-cols-3 gap-10">
-                <div className="md:col-span-2">
-                  <section className="bg-white p-10 rounded-[3rem] shadow-sm border border-slate-100">
-                    <h2 className="text-2xl font-black mb-6 flex items-center gap-3 text-black">
-                      <span className="w-2 h-8 bg-blue-600 rounded-full" />
-                      Diretrizes Gerais
-                    </h2>
-                    <p className="text-slate-600 leading-relaxed text-xl italic font-medium">
-                      "{data.resumoGeral || data.resumo?.resumo || 'Resumo não disponível.'}"
-                    </p>
-                  </section>
-                </div>
-                <div className="bg-blue-600 p-8 rounded-[3rem] text-white h-fit shadow-xl">
-                  <p className="text-[11px] font-black uppercase opacity-70 mb-2">Coerência Atual</p>
-                  <div className="flex items-baseline gap-2">
-                    <span className="text-6xl font-black">{data.indiceDeCoerencia ?? '0.0'}</span>
-                    <span className="text-xl opacity-60">/ 100</span>
-                  </div>
-                </div>
-              </div>
-            )}
+        <div className="max-w-6xl mx-auto px-6 py-10">
+          {/* HERO CARD */}
+          <div className="relative w-full min-h-[400px] rounded-[3.5rem] overflow-hidden shadow-2xl mb-12 bg-slate-900 flex items-center">
+            <div className="absolute inset-0 opacity-30 bg-slate-500" />
 
-            {activeTab === 'topicos' && (
-              <div className="space-y-4 max-w-4xl">
-                {listaTopicos.length > 0 ? (
-                  listaTopicos.map((topico: any, index: number) => (
-                    <div key={index} className="bg-white rounded-3xl border border-slate-200 overflow-hidden shadow-sm">
-                      <button
-                        onClick={() => setExpandedTopic(expandedTopic === index ? null : index)}
-                        className="w-full px-8 py-6 flex items-center justify-between hover:bg-slate-50 transition-colors"
-                      >
-                        <div className="flex items-center gap-4">
-                          <div className="bg-blue-50 text-blue-600 p-3 rounded-2xl">
-                            <TextQuote size={20} />
-                          </div>
-                          <div className="text-left">
-                            <h3 className="font-black text-slate-800 text-lg uppercase tracking-tight">
-                              {topico.categoria?.nome || "Tópico Geral"}
-                            </h3>
-                            <span className="text-sm text-slate-500 font-bold">
-                              {topico.numeroDePropostas || 0} Propostas
-                            </span>
-                          </div>
-                        </div>
-                        {expandedTopic === index ? <Minus className="text-blue-600" /> : <Plus className="text-blue-600" />}
-                      </button>
-                      
-                      <AnimatePresence>
-                        {expandedTopic === index && (
-                          <motion.div
-                            initial={{ height: 0, opacity: 0 }}
-                            animate={{ height: 'auto', opacity: 1 }}
-                            exit={{ height: 0, opacity: 0 }}
-                            className="overflow-hidden"
-                          >
-                            <div className="px-8 pb-8 pt-4 border-t border-slate-100 text-slate-600 leading-relaxed text-lg">
-                              <p className="font-medium mb-6">
-                                {topico.resumoTopico || "Sem detalhes para este tópico."}
-                              </p>
-
-                              {topico.propostas && topico.propostas.length > 0 && (
-                                <div className="space-y-4 mt-4">
-                                  <h4 className="text-xs font-black text-slate-400 uppercase tracking-widest">Propostas detalhadas</h4>
-                                  {topico.propostas.map((p: any, i: number) => (
-                                    <div key={i} className="bg-slate-50 p-5 rounded-2xl border border-slate-100">
-                                      <h5 className="font-bold text-blue-600 text-base">{p.proposta}</h5>
-                                      <p className="text-sm text-slate-600 mt-1">{p.ideia}</p>
-                                      {p.formaImplementacao && (
-                                        <div className="mt-3 pt-3 border-t border-slate-200/60 text-xs text-slate-400 italic">
-                                          <span className="font-bold not-italic">Implementação:</span> {p.formaImplementacao}
-                                        </div>
-                                      )}
-                                    </div>
-                                  ))}
-                                </div>
-                              )}
-                            </div>
-                          </motion.div>
-                        )}
-                      </AnimatePresence>
-                    </div>
-                  ))
+            <div className="relative z-10 w-full flex flex-col md:flex-row items-center px-8 md:px-16 gap-12">
+              <div className="h-[300px] md:h-[350px] aspect-[3/4] rounded-3xl overflow-hidden border-4 border-white/10 shadow-2xl shrink-0">
+                {imageSrc ? (
+                  <img
+                    src={imageSrc}
+                    className="w-full h-full object-cover"
+                    alt={data.nome}
+                  />
                 ) : (
-                  <div className="bg-white p-10 rounded-3xl border border-slate-100 text-center text-slate-400 font-bold">
-                    Nenhum tópico encontrado para este plano de governo.
+                  <div className="w-full h-full bg-slate-700 flex items-center justify-center text-slate-400">
+                    Sem foto
                   </div>
                 )}
               </div>
-            )}
 
-            {(activeTab === 'espectro' || activeTab === 'coerencia') && (
-              <div className="bg-white p-20 rounded-[3.5rem] border border-dashed border-slate-300 flex flex-col items-center justify-center text-slate-400">
-                <Award size={48} className="opacity-20 mb-4" />
-                <span className="font-black uppercase tracking-widest text-sm">Em desenvolvimento...</span>
+              <div className="flex-1 text-center md:text-left">
+                <div className="inline-flex items-center gap-2 bg-blue-600 text-white text-[11px] font-black px-4 py-1.5 rounded-full uppercase tracking-widest mb-6">
+                  <ShieldCheck size={14} />
+                  Candidato Oficial
+                </div>
+
+                <h1 className="text-4xl md:text-6xl font-black text-white mb-4">
+                  {data.nome}
+                </h1>
+
+                <div className="flex flex-wrap items-center justify-center md:justify-start gap-4 text-blue-200/80 font-bold text-lg uppercase">
+                  <span className="text-white">{data.partido}</span>
+                  <span className="w-1.5 h-1.5 bg-blue-500 rounded-full" />
+                  <span>{data.cargo}</span>
+                  <span className="w-1.5 h-1.5 bg-blue-500 rounded-full" />
+                  <span>{data.ano ?? '2022'}</span>
+                </div>
               </div>
-            )}
-          </motion.div>
-        </AnimatePresence>
-      </div>
-    </main>
-  );
-}
+            </div>
+          </div>
+
+          {/* ABAS */}
+          <div className="flex flex-wrap gap-2 mb-8 border-b border-slate-200 pb-4">
+            {tabs.map((tab) => (
+              <button
+                key={tab.id}
+                onClick={() => {
+                  setActiveTab(tab.id);
+                  setExpandedTopic(null);
+                  setExpandedProposal(null);
+                }}
+                className={`flex items-center gap-2 px-6 py-3 rounded-full font-bold transition-all ${
+                  activeTab === tab.id
+                    ? 'bg-blue-600 text-white shadow-lg shadow-blue-200'
+                    : 'text-slate-500 hover:bg-slate-100'
+                }`}
+              >
+                {tab.icon}
+                {tab.label}
+              </button>
+            ))}
+          </div>
+
+          {/* CONTEÚDO */}
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={activeTab}
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -10 }}
+              transition={{ duration: 0.2 }}
+            >
+              {activeTab === 'principal' && (
+                <div className="grid md:grid-cols-3 gap-10">
+                  <div className="md:col-span-2">
+                    <section className="bg-white p-10 rounded-[3rem] shadow-sm border border-slate-100">
+                      <h2 className="text-2xl font-black mb-6 flex items-center gap-3 text-black">
+                        <span className="w-2 h-8 bg-blue-600 rounded-full" />
+                        Diretrizes Gerais
+                      </h2>
+
+                      <p className="text-slate-600 leading-relaxed text-xl italic font-medium">
+                        &quot;
+                        {data.resumoGeral ||
+                          data.resumo?.resumo ||
+                          'Resumo não disponível.'}
+                        &quot;
+                      </p>
+                    </section>
+                  </div>
+
+                  <div className="bg-blue-600 p-8 rounded-[3rem] text-white h-fit shadow-xl">
+                    <p className="text-[11px] font-black uppercase opacity-70 mb-2">
+                      Coerência Atual
+                    </p>
+
+                    <div className="flex items-baseline gap-2">
+                      <span className="text-6xl font-black">
+                        {data.indiceDeCoerencia ?? '0.0'}
+                      </span>
+                      <span className="text-xl opacity-60">/ 100</span>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {activeTab === 'topicos' && (
+                <div className="max-w-5xl mx-auto space-y-8">
+                  {/* GRÁFICO HORIZONTAL */}
+                  <section className="bg-white rounded-[3rem] border border-slate-100 shadow-sm p-8 md:p-10">
+                    <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4 mb-8">
+                      <div>
+                        <p className="text-xs font-black uppercase tracking-[0.25em] text-blue-600 mb-2">
+                          Distribuição temática
+                        </p>
+
+                        <h2 className="text-2xl md:text-3xl font-black text-slate-900">
+                          Propostas por tema
+                        </h2>
+                      </div>
+
+                      <div className="bg-slate-900 text-white rounded-2xl px-5 py-3 text-center shadow-lg">
+                        <p className="text-[10px] font-black uppercase tracking-widest text-slate-400">
+                          Total
+                        </p>
+
+                        <p className="text-2xl font-black">{totalPropostas}</p>
+                      </div>
+                    </div>
+
+                    <div className="space-y-5">
+                      {topicosNormalizados.map((topico) => {
+                        const percentual =
+                          totalPropostas > 0
+                            ? Math.round(
+                                (Number(topico.quantidadePropostas || 0) /
+                                  totalPropostas) *
+                                  100
+                              )
+                            : 0;
+
+                        return (
+                          <div key={topico.categoriaKey} className="space-y-2">
+                            <div className="flex items-center justify-between gap-4">
+                              <span className="text-sm font-black text-slate-700">
+                                {topico.categoriaLabel}
+                              </span>
+
+                              <span className="text-xs font-black text-slate-500">
+                                {topico.quantidadePropostas} propostas · {percentual}%
+                              </span>
+                            </div>
+
+                            <div className="h-4 w-full rounded-full bg-slate-100 overflow-hidden">
+                              <motion.div
+                                initial={{ width: 0 }}
+                                animate={{ width: `${percentual}%` }}
+                                transition={{ duration: 0.7, ease: 'easeOut' }}
+                                className="h-full rounded-full bg-gradient-to-r from-blue-500 via-indigo-500 to-violet-600 shadow-sm"
+                              />
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </section>
+
+                  {/* DROPDOWNS DOS TEMAS */}
+                  <section className="space-y-4">
+                    {topicosNormalizados.map((topico) => {
+                      const topicIsOpen = expandedTopic === topico.categoriaKey;
+
+                      return (
+                        <div
+                          key={topico.categoriaKey}
+                          className="bg-white rounded-[2rem] border border-slate-200 overflow-hidden shadow-sm"
+                        >
+                          <button
+                            onClick={() => {
+                              setExpandedTopic(
+                                topicIsOpen ? null : topico.categoriaKey
+                              );
+                              setExpandedProposal(null);
+                            }}
+                            className="w-full px-6 md:px-8 py-6 flex items-center justify-between hover:bg-slate-50 transition-colors"
+                          >
+                            <div className="flex items-center gap-4">
+                              <div className="bg-blue-50 text-blue-600 p-3 rounded-2xl">
+                                <TextQuote size={20} />
+                              </div>
+
+                              <div className="text-left">
+                                <h3 className="font-black text-slate-900 text-base md:text-lg">
+                                  {topico.categoriaLabel}
+                                </h3>
+
+                                <span className="text-sm text-slate-500 font-bold">
+                                  {topico.quantidadePropostas} propostas
+                                </span>
+                              </div>
+                            </div>
+
+                            {topicIsOpen ? (
+                              <Minus className="text-blue-600 shrink-0" />
+                            ) : (
+                              <Plus className="text-blue-600 shrink-0" />
+                            )}
+                          </button>
+
+                          <AnimatePresence>
+                            {topicIsOpen && (
+                              <motion.div
+                                initial={{ height: 0, opacity: 0 }}
+                                animate={{ height: 'auto', opacity: 1 }}
+                                exit={{ height: 0, opacity: 0 }}
+                                className="overflow-hidden"
+                              >
+                                <div className="px-6 md:px-8 pb-8 pt-4 border-t border-slate-100">
+                                  <div className="bg-slate-50 rounded-3xl p-6 border border-slate-100 mb-6">
+                                    <p className="text-xs font-black uppercase tracking-widest text-slate-400 mb-3">
+                                      Resumo do tema
+                                    </p>
+
+                                    <p className="text-slate-700 leading-relaxed text-base md:text-lg font-medium">
+                                      {topico.resumo ||
+                                        'Resumo não disponível para este tema.'}
+                                    </p>
+                                  </div>
+
+                                  <div className="space-y-3">
+                                    <h4 className="text-xs font-black text-slate-400 uppercase tracking-widest">
+                                      Propostas
+                                    </h4>
+
+                                    {topico.propostas.length > 0 ? (
+                                      topico.propostas.map(
+                                        (proposta: any, index: number) => {
+                                          const proposalKey = `${
+                                            topico.categoriaKey
+                                          }-${proposta.id ?? index}`;
+
+                                          const proposalIsOpen =
+                                            expandedProposal === proposalKey;
+
+                                          return (
+                                            <div
+                                              key={proposalKey}
+                                              className="rounded-2xl border border-slate-200 bg-white overflow-hidden"
+                                            >
+                                              <button
+                                                onClick={() =>
+                                                  setExpandedProposal(
+                                                    proposalIsOpen
+                                                      ? null
+                                                      : proposalKey
+                                                  )
+                                                }
+                                                className="w-full px-5 py-4 flex items-center justify-between gap-4 hover:bg-slate-50 transition-colors"
+                                              >
+                                                <div className="text-left">
+                                                  <p className="text-sm font-black text-blue-600">
+                                                    Proposta {index + 1}
+                                                  </p>
+
+                                                  <h5 className="font-bold text-slate-800">
+                                                    {proposta.proposta ||
+                                                      'Proposta sem título'}
+                                                  </h5>
+                                                </div>
+
+                                                {proposalIsOpen ? (
+                                                  <Minus
+                                                    size={18}
+                                                    className="text-blue-600 shrink-0"
+                                                  />
+                                                ) : (
+                                                  <Plus
+                                                    size={18}
+                                                    className="text-blue-600 shrink-0"
+                                                  />
+                                                )}
+                                              </button>
+
+                                              <AnimatePresence>
+                                                {proposalIsOpen && (
+                                                  <motion.div
+                                                    initial={{
+                                                      height: 0,
+                                                      opacity: 0,
+                                                    }}
+                                                    animate={{
+                                                      height: 'auto',
+                                                      opacity: 1,
+                                                    }}
+                                                    exit={{
+                                                      height: 0,
+                                                      opacity: 0,
+                                                    }}
+                                                    className="overflow-hidden"
+                                                  >
+                                                    <div className="px-5 pb-5 pt-2 border-t border-slate-100 space-y-4">
+                                                      <div>
+                                                        <p className="text-xs font-black uppercase tracking-widest text-slate-400 mb-1">
+                                                          Ideia geral
+                                                        </p>
+
+                                                        <p className="text-sm text-slate-700 leading-relaxed">
+                                                          {proposta.ideia ||
+                                                            'Ideia geral não informada.'}
+                                                        </p>
+                                                      </div>
+
+                                                      {proposta.formaImplementacao && (
+                                                        <div className="bg-blue-50 border border-blue-100 rounded-2xl p-4">
+                                                          <p className="text-xs font-black uppercase tracking-widest text-blue-500 mb-1">
+                                                            Forma de implementação
+                                                          </p>
+
+                                                          <p className="text-sm text-slate-700 leading-relaxed">
+                                                            {
+                                                              proposta.formaImplementacao
+                                                            }
+                                                          </p>
+                                                        </div>
+                                                      )}
+                                                    </div>
+                                                  </motion.div>
+                                                )}
+                                              </AnimatePresence>
+                                            </div>
+                                          );
+                                        }
+                                      )
+                                    ) : (
+                                      <div className="bg-slate-50 rounded-2xl p-5 text-center text-slate-400 font-bold">
+                                        Nenhuma proposta cadastrada para este tema.
+                                      </div>
+                                    )}
+                                  </div>
+                                </div>
+                              </motion.div>
+                            )}
+                          </AnimatePresence>
+                        </div>
+                      );
+                    })}
+                  </section>
+                </div>
+              )}
+
+              {(activeTab === 'espectro' || activeTab === 'coerencia') && (
+                <div className="bg-white p-20 rounded-[3.5rem] border border-dashed border-slate-300 flex flex-col items-center justify-center text-slate-400">
+                  <Award size={48} className="opacity-20 mb-4" />
+
+                  <span className="font-black uppercase tracking-widest text-sm">
+                    Em desenvolvimento...
+                  </span>
+                </div>
+              )}
+            </motion.div>
+          </AnimatePresence>
+        </div>
+      </main>
+    );
+  }

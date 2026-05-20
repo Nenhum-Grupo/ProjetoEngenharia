@@ -79,7 +79,7 @@ db_max_storage = 30
 # Storage / S3
 # =========================
 
-bucket_name = "system-eleic-bucket"
+bucket_name = "eleicoesystem-bucket"
 
 
 # =========================

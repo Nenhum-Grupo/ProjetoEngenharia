@@ -34,5 +34,4 @@ public class CandidatoController {
         ResumoDTO p = candidatoDetalheService.getResumo(id);
         return ResponseEntity.ok(p);
     }
-
 }

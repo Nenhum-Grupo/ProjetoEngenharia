@@ -196,6 +196,11 @@ jobs:
         username: ${{secrets.DOCKER_HUB_USER_FRONT}}
         password: ${{secrets.DOCKER_HUB_TOKEN_FRONT}}
 
+    - name: Validate ALB DNS for frontend build
+      run: |
+        echo "ALB DNS recebido: '${{ needs.terraform.outputs.alb_dns_name }}'"
+        test -n "${{ needs.terraform.outputs.alb_dns_name }}" || (echo "ALB DNS vazio" && exit 1)
+
     - name: Build da Imagem Front
       run: |
         docker build \

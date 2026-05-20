@@ -64,7 +64,7 @@ backend_port  = 8080
 # Compute / EC2
 # =========================
 
-instance_type = "t3.medium"
+instance_type = "t3.small"
 ebs_size      = 10
 
 # =========================

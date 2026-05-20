@@ -1,6 +1,5 @@
 package app.app.controllers;
 
-
 import app.app.DTO.CandidatoDetalhe.CandidatoDetalheDTO;
 import app.app.DTO.CandidatoDetalhe.ResumoDTO;
 import app.app.DTO.CandidatoDetalhe.SaveResumoDTO;

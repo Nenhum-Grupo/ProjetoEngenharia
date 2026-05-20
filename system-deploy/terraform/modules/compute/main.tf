@@ -53,7 +53,7 @@ resource "aws_iam_policy" "s3_read_only_policy" {
         Action = [
           "s3:ListBucket"
         ]
-        Resource = "arn:aws:s3:::${var.bucket_name}"
+        Resource = "arn:aws:s3:::${var.s3_bucket}"
       },
       {
         Sid    = "ReadObjects"

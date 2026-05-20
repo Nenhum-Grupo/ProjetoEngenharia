@@ -37,3 +37,7 @@ resource "aws_db_instance" "postgres" {
   deletion_protection = false
 
 }
+
+data "aws_s3_bucket" "app_bucket" {
+  bucket = var.s3_bucket
+}

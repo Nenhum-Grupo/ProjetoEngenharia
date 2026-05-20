@@ -216,6 +216,10 @@ variable "db_max_storage" {
   description = "Armazenamento máximo do banco em GB."
 }
 
+variable "s3_bucket" {
+  type        = string
+  description = "nome do bucket."
+}
 
 #=========================
 # Imagens Back e Frontend
@@ -225,6 +229,7 @@ variable "backend_image" {
   type        = string
   description = "nome da imagem do backend no Dockerhub."
 }
+
 
 variable "frontend_image" {
   type        = string

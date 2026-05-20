@@ -37,10 +37,3 @@ resource "aws_db_instance" "postgres" {
   deletion_protection = false
 
 }
-
-//===========================
-//Simple Storage Service (S3)
-//===========================
-resource "aws_s3_bucket" "bucket" {
-  bucket = var.bucket_name
-}

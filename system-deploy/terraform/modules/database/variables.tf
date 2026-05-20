@@ -10,9 +10,6 @@ variable "db_name" {
     type = string
 }
 
-variable "bucket_name" {
-    type = string
-}
 
 variable "subnet1" {
     type = string

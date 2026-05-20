@@ -216,14 +216,6 @@ variable "db_max_storage" {
   description = "Armazenamento máximo do banco em GB."
 }
 
-# =========================
-# Storage / S3
-# =========================
-
-variable "bucket_name" {
-  type        = string
-  description = "Nome do bucket S3 usado pela aplicação."
-}
 
 #=========================
 # Imagens Back e Frontend

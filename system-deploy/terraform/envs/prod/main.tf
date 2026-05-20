@@ -69,8 +69,6 @@ module "database" {
 
   db_storage = var.db_storage
   db_max_storage = var.db_max_storage
-
-  bucket_name = var.bucket_name
 }
 
 module "secrets" {

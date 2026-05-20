@@ -75,12 +75,6 @@ db_type = "db.t4g.micro"
 db_storage     = 20
 db_max_storage = 30
 
-# =========================
-# Storage / S3
-# =========================
-
-bucket_name = "eleicoesystem-bucket"
-
 
 # =========================
 # Backend / Frontend Images

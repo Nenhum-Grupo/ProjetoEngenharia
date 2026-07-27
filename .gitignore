@@ -10,6 +10,18 @@
 *.swp
 *.class
 
-#Local Test
+# Local Test
 docker_compose.yml
 debugger_compose.yml
+
+# Enviroments
+.env
+.env.*
+!.env.example
+
+# IDEs e Editores
+.vscode/
+
+# Arquivos do Sistema Operacional
+.DS_Store
+Thumbs.db

@@ -1,39 +1,44 @@
 """Application configuration."""
 
-from pydantic import Field
+from pydantic import Field, SecretStr
 from pydantic_settings import BaseSettings, SettingsConfigDict
-
+from typing import Optional
 
 class Settings(BaseSettings):
-    """Application settings."""
+       """Application settings."""
 
-    model_config = SettingsConfigDict(
-        env_file=".env",
-        env_file_encoding="utf-8",
-        extra="ignore",
-    )
+       model_config = SettingsConfigDict(
+              env_file=".env",
+              env_file_encoding="utf-8",
+              extra="ignore",
+       )
 
-    app_name: str = Field(default="app", description="Application name")
-    debug: bool = Field(default=False, description="Debug mode")
-    api_v1_str: str = Field(default="/api/v1", description="API version 1 prefix")
+       app_name: str = Field(default="app", description="Application name")
+       debug: bool = Field(default=False, description="Debug mode")
+       api_v1_str: str = Field(default="/api/v1", description="API version 1 prefix")
 
-     google_api_key: Optional[SecretStr] = Field(
-            default=None,
-            description="Chave da API de Inteligência Artificial",
-     )
-     aws_access_key_id: Optional[SecretStr] = Field(
-            default=None,
-            description="AWS/OBS Access Key",
-     )
+       google_api_key: Optional[SecretStr] = Field(
+              default=None,
+              description="Chave da API de Inteligência Artificial",
+       )
+       aws_access_key_id: Optional[SecretStr] = Field(
+              default=None,
+              description="AWS/OBS Access Key",
+       )
 
-     aws_secret_access_key: Optional[SecretStr] = Field(
-            default=None,
-            description="AWS/OBS Secret Key",
-     )
+       aws_secret_access_key: Optional[SecretStr] = Field(
+              default=None,
+              description="AWS/OBS Secret Key",
+       )
 
-     aws_default_region: Optional[SecretStr] = Field(
-            default=None,
-            description="AWS/OBS Region",
-     )
+       aws_default_region: Optional[SecretStr] = Field(
+              default=None,
+              description="AWS/OBS Region",
+       )
+
+       api_twitter: Optional[SecretStr] = Field(
+              default=None,
+              description="Twitter posts scraping API key",
+       )
 
 settings = Settings()

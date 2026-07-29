@@ -5,6 +5,8 @@ from google.genai import types, errors
 from google import genai
 from time import sleep
 import inspect
+import boto3
+import json
 import os
 
 class gemini_handler():
@@ -12,8 +14,8 @@ class gemini_handler():
         self.arquivo = arquivo
 
         self.client = genai.Client(api_key=settings.google_api_key)
-        self.MODEL_ID = "models/gemini-3.1-flash-lite-preview"
-        self.ALT_MODEL_ID = "models/gemini-2.5-flash"
+        self.MODELS = ["models/gemini-2.5-flash", "models/gemma-4-31b-it", "models/gemini-3.1-flash-lite-preview"]
+        self.MODEL_ID = self.MODELS[0]
         self.agentes = {
          "analista": """
          Você é um Analista de Políticas Públicas especializado em transformar planos de governo em informações claras para a população.
@@ -236,6 +238,7 @@ class gemini_handler():
 }
 
     def __resumo_inicial(self, bucketName, bucketKey):
+        print("Iniciando processamento do PDF")
         texto_extraido = PDFManager(bucketName, bucketKey)
         agente = self.agentes["analista"]
 
@@ -258,6 +261,7 @@ class gemini_handler():
 
         for tentativa in range(3):
             try:
+                print("Iniciando processamento da primeira requisição")
                 response = self.client.models.generate_content(
                     model=self.MODEL_ID,
                     contents=contents,
@@ -299,6 +303,7 @@ class gemini_handler():
 
         for tentativa in range(3):
             try:
+                print("Iniciando processamento da segunda requisição")
                 response = self.client.models.generate_content(
                     model=self.MODEL_ID,
                     contents=contents,
@@ -337,10 +342,21 @@ class gemini_handler():
 
         for tentativa in range(3):
             try:
+                print("Iniciando processamento da terceira requisição")
                 response = self.client.models.generate_content(
                     model=self.MODEL_ID,
                     contents=contents,
                     config=config,
+                )
+
+                # Adicionando no S3
+                data = json.loads(response.text)
+                s3_client = boto3.client('s3')
+                s3_client.put_object(
+                    Bucket=bucketName,
+                    Key="Resumos/Bolsonaro.json",
+                    Body=json.dumps(data, ensure_ascii=False, indent=2).encode("utf-8"),
+                    ContentType="application/json"
                 )
 
                 return response.text
@@ -355,5 +371,4 @@ class gemini_handler():
 
 if __name__ == "__main__":
     GH = gemini_handler()
-    print(GH.Resumo_plano("eleicoesystem-bucket","Eleicoes/2022/Presidente/PlanoGoverno_Jair_Bolsonaro.pdf"))
-
+    GH.Resumo_plano("eleicoesystem-bucket","Eleicoes/2022/Presidente/PlanoGoverno_Jair_Bolsonaro.pdf")

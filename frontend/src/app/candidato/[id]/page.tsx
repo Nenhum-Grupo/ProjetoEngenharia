@@ -1,13 +1,5 @@
 'use client';
-import {
-  RadarChart,
-  PolarGrid,
-  PolarAngleAxis,
-  PolarRadiusAxis,
-  Radar,
-  ResponsiveContainer,
-  Tooltip,
-} from 'recharts';
+
 import React, { useEffect, useMemo, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import {
@@ -220,21 +212,6 @@ export default function DetalheCandidato() {
     }, 0);
   }, [topicosNormalizados]);
 
-  const dadosRadar = useMemo(() => {
-    const classificacoes = data?.graficoRadar || [];
-
-    return CATEGORIAS.map((categoria) => {
-      const item = classificacoes.find(
-        (c: any) => getCategoriaKey(c.categoria) === categoria.key
-      );
-
-      return {
-        categoriaLabel: categoria.label,
-        percentual: item?.percentual ?? 0,
-      };
-    });
-  }, [data]);
-
   if (loading) {
     return (
       <div className="min-h-screen bg-[#F8FAFC] flex items-center justify-center">
@@ -330,10 +307,11 @@ export default function DetalheCandidato() {
                 setExpandedTopic(null);
                 setExpandedProposal(null);
               }}
-              className={`flex items-center gap-2 px-6 py-3 rounded-full font-bold transition-all ${activeTab === tab.id
-                ? 'bg-blue-600 text-white shadow-lg shadow-blue-200'
-                : 'text-slate-500 hover:bg-slate-100'
-                }`}
+              className={`flex items-center gap-2 px-6 py-3 rounded-full font-bold transition-all ${
+                activeTab === tab.id
+                  ? 'bg-blue-600 text-white shadow-lg shadow-blue-200'
+                  : 'text-slate-500 hover:bg-slate-100'
+              }`}
             >
               {tab.icon}
               {tab.label}
@@ -422,10 +400,10 @@ export default function DetalheCandidato() {
                           const percentual =
                             totalPropostas > 0
                               ? Math.round(
-                                (Number(topico.quantidadePropostas || 0) /
-                                  totalPropostas) *
-                                100
-                              )
+                                  (Number(topico.quantidadePropostas || 0) /
+                                    totalPropostas) *
+                                    100
+                                )
                               : 0;
 
                           return (
@@ -531,8 +509,9 @@ export default function DetalheCandidato() {
                                       {topico.propostas.length > 0 ? (
                                         topico.propostas.map(
                                           (proposta: any, index: number) => {
-                                            const proposalKey = `${topico.categoriaKey
-                                              }-${proposta.id ?? index}`;
+                                            const proposalKey = `${
+                                              topico.categoriaKey
+                                            }-${proposta.id ?? index}`;
 
                                             const proposalIsOpen =
                                               expandedProposal === proposalKey;
@@ -647,45 +626,13 @@ export default function DetalheCandidato() {
               </div>
             )}
 
-            {activeTab === 'espectro' && (
-              <div className="bg-white p-10 rounded-[3rem] border border-slate-100 shadow-sm">
-                <div className="mb-8">
-                  <p className="text-xs font-black uppercase tracking-[0.25em] text-blue-600 mb-2">
-                    Classificação temática
-                  </p>
-                  <h2 className="text-2xl md:text-3xl font-black text-slate-900">
-                    Espectro Político
-                  </h2>
-                  {data.categoriaEspectroPolitico && (
-                    <span className="inline-block mt-3 bg-blue-50 text-blue-600 font-black text-sm px-4 py-1.5 rounded-full uppercase tracking-wide">
-                      {data.categoriaEspectroPolitico.replaceAll('_', ' ')}
-                    </span>
-                  )}
-                </div>
+            {(activeTab === 'espectro' || activeTab === 'coerencia') && (
+              <div className="bg-white p-20 rounded-[3.5rem] border border-dashed border-slate-300 flex flex-col items-center justify-center text-slate-400">
+                <Award size={48} className="opacity-20 mb-4" />
 
-                <ResponsiveContainer width="100%" height={450}>
-                  <RadarChart data={dadosRadar} outerRadius="75%">
-                    <PolarGrid stroke="#E2E8F0" />
-                    <PolarAngleAxis
-                      dataKey="categoriaLabel"
-                      tick={{ fill: '#334155', fontSize: 12, fontWeight: 700 }}
-                    />
-                    <PolarRadiusAxis
-                      angle={30}
-                      domain={[0, 100]}
-                      tick={{ fill: '#94A3B8', fontSize: 10 }}
-                    />
-                    <Radar
-                      name={data.nome}
-                      dataKey="percentual"
-                      stroke="#2563EB"
-                      fill="#2563EB"
-                      fillOpacity={0.35}
-                      strokeWidth={2}
-                    />
-                    <Tooltip formatter={(value: any) => `${value}%`} />
-                  </RadarChart>
-                </ResponsiveContainer>
+                <span className="font-black uppercase tracking-widest text-sm">
+                  Em desenvolvimento...
+                </span>
               </div>
             )}
           </motion.div>

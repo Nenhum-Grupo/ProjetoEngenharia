@@ -355,5 +355,5 @@ class gemini_handler():
 
 if __name__ == "__main__":
     GH = gemini_handler()
-    print(GH.Resumo_plano("eleicoesystem-bucket","Eleicoes/2022/Presidente/PlanoGoverno_Jair_Bolsonaro.pdf"))
+    print(GH.Resumo_plano("eleicoesystem-bucket-2","Eleicoes/2022/Presidente/PlanoGoverno_Jair_Bolsonaro.pdf"))
 

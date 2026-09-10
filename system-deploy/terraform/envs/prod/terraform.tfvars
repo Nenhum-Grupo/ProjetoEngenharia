@@ -75,7 +75,7 @@ db_type = "db.t4g.micro"
 db_storage     = 20
 db_max_storage = 30
 
-s3_bucket = "eleicoesystem-bucket"
+s3_bucket = "resumosplano"
 # =========================
 # Backend / Frontend Images
 # =========================

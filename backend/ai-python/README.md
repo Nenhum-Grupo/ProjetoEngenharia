@@ -58,6 +58,17 @@ app/
     └── __init__.py      # SQLAlchemy models 
 ```
 
+# How to test Summarize.py
+```cd backend/ai-python```
+
+```python -m app.services.summarize```
+
+# How to test twitter_scraper.py
+```cd backend/ai-python```
+
+```python -m app.services.twitter_scraper.py```
+
 ## License
 
 This project is licensed under the MIT License.
+

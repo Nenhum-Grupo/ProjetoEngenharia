@@ -10,6 +10,7 @@ import {
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
+
 type Cargo =
   | 'PRESIDENTE'
   | 'PREFEITO'
@@ -454,11 +455,10 @@ export default function Home() {
                 </label>
 
                 <select
-                  className={`h-11 w-full rounded-xl border px-4 text-sm font-bold outline-none transition-all ${
-                    podeSelecionarEstado
+                  className={`h-11 w-full rounded-xl border px-4 text-sm font-bold outline-none transition-all ${podeSelecionarEstado
                       ? 'border-slate-200 bg-slate-50 focus:border-blue-500 focus:bg-white focus:ring-4 focus:ring-blue-100'
                       : 'cursor-not-allowed border-slate-100 bg-slate-100 text-slate-400'
-                  }`}
+                    }`}
                   value={filtros.estado}
                   disabled={!podeSelecionarEstado}
                   onChange={(e) =>
@@ -487,11 +487,10 @@ export default function Home() {
                 </label>
 
                 <select
-                  className={`h-11 w-full rounded-xl border px-4 text-sm font-bold outline-none transition-all ${
-                    podeSelecionarCidade
+                  className={`h-11 w-full rounded-xl border px-4 text-sm font-bold outline-none transition-all ${podeSelecionarCidade
                       ? 'border-slate-200 bg-slate-50 focus:border-blue-500 focus:bg-white focus:ring-4 focus:ring-blue-100'
                       : 'cursor-not-allowed border-slate-100 bg-slate-100 text-slate-400'
-                  }`}
+                    }`}
                   value={filtros.cidade}
                   disabled={!podeSelecionarCidade}
                   onChange={(e) =>
@@ -676,3 +675,4 @@ export default function Home() {
     </main>
   );
 }
+

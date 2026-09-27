@@ -31,7 +31,7 @@ class Settings(BaseSettings):
               description="AWS/OBS Secret Key",
        )
 
-       aws_default_region: Optional[SecretStr] = Field(
+       aws_region: Optional[SecretStr] = Field(
               default=None,
               description="AWS/OBS Region",
        )
@@ -39,6 +39,16 @@ class Settings(BaseSettings):
        api_twitter: Optional[SecretStr] = Field(
               default=None,
               description="Twitter posts scraping API key",
+       )
+
+       bucketname: Optional[SecretStr] = Field(
+              default=None,
+              description="Bucket S3 name",
+       )
+
+       database_url: Optional[SecretStr] = Field(
+              default=None,
+              description="Database URL for connection",
        )
 
 settings = Settings()

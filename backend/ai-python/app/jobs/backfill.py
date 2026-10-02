@@ -1,53 +1,10 @@
-from botocore.exceptions import ClientError
-import boto3
 import json
+
+from app.utils.s3_handler import upload_dict_to_s3, build_s3_key
 
 from app.services.twitter_scraper import SocialMedia_Handler
 from app.services.summarize import Gemini_Handler
 from app.core.config import settings
-
-
-def upload_dict_to_s3(data_dict: dict, s3_key: str, bucket_name: str):
-    """
-    Envia um dicionário Python diretamente para o S3 como arquivo .json limpo.
-
-    :param data_dict: Dicionário com o conteúdo a ser salvo.
-    :param s3_key: nome do arquivo a ser salvo (com "pasta").
-    :param bucket_name: nome do bucket S3 usado.
-    """
-
-    aws_access_key = (
-        settings.aws_access_key_id.get_secret_value()
-        if hasattr(settings.aws_access_key_id, "get_secret_value")
-        else settings.aws_access_key_id
-    )
-    aws_secret_key = (
-        settings.aws_secret_access_key.get_secret_value()
-        if hasattr(settings.aws_secret_access_key, "get_secret_value")
-        else settings.aws_secret_access_key
-    )
-    aws_region = getattr(settings, "aws_region", "us-east-1")
-
-    # Inicializa o cliente do S3 injetando as chaves do .env
-    s3_client = boto3.client(
-        "s3",
-        aws_access_key_id=aws_access_key,
-        aws_secret_access_key=aws_secret_key,
-        region_name=aws_region
-    )
-
-    json_bytes = json.dumps(data_dict, ensure_ascii=False, indent=4).encode("utf-8")
-
-    try: 
-        s3_client.put_object(
-            Bucket=bucket_name,
-            Key=s3_key,
-            Body=json_bytes,
-            ContentType="application/json; charset=utf-8"
-        )
-        print(f"[S3] Enviado com sucesso para s3://bucket_name/{s3_key}")
-    except ClientError as e:
-        print(f"[S3] Erro ao enviar '{s3_key}: {e}")
 
 def run_backfill():
     bucket_name = (
@@ -98,7 +55,7 @@ def run_backfill():
 
             # Upload posts
 
-            s3_key_posts = _build_s3_key(
+            s3_key_posts = build_s3_key(
                 ano="2026",
                 candidato=candidato_pasta,
                 subpasta="posts",
@@ -125,7 +82,7 @@ def run_backfill():
                 print(f"Erro ao gerar resumo com Gemini para @{handle} no periodo {filename}")
                 continue
 
-            s3_key_resumo = _build_s3_key(
+            s3_key_resumo = build_s3_key(
                 ano="2026",
                 candidato=candidato_pasta,
                 subpasta="resumo_posts",
@@ -134,14 +91,6 @@ def run_backfill():
             upload_dict_to_s3(resumo_dict, s3_key_resumo, bucket_name)
 
     print("Backfill finalizado")
-
-def _build_s3_key(ano:str, candidato: str, subpasta: str, filename: str) -> str:
-    """
-    Gera a chave e enxuta para o S3.
-    
-    :return key: exemplo: 
-    """
-    return f"{ano}/{candidato}/{subpasta}/{filename}"
 
 if __name__ == "__main__":
     run_backfill()

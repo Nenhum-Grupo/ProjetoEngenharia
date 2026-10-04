@@ -1,34 +1,14 @@
 # código do gemini pra testar se o backfill rodou legal
 
 import json
-import boto3
+
 from app.core.config import settings
-
-def get_s3_client():
-    """Instancia o cliente do boto3 usando os segredos do Pydantic."""
-    aws_access_key = (
-        settings.aws_access_key_id.get_secret_value()
-        if hasattr(settings.aws_access_key_id, "get_secret_value")
-        else settings.aws_access_key_id
-    )
-    aws_secret_key = (
-        settings.aws_secret_access_key.get_secret_value()
-        if hasattr(settings.aws_secret_access_key, "get_secret_value")
-        else settings.aws_secret_access_key
-    )
-    aws_region = getattr(settings, "aws_region", "us-east-1")
-
-    return boto3.client(
-        "s3",
-        aws_access_key_id=aws_access_key,
-        aws_secret_access_key=aws_secret_key,
-        region_name=aws_region
-    )
+from app.utils.s3_handler import _get_s3_client
 
 
 def list_s3_files(bucket_name: str, prefix: str = "2026/"):
     """Lista todos os arquivos presentes no S3 sob um determinado prefixo."""
-    s3_client = get_s3_client()
+    s3_client = _get_s3_client()
     print(f"\n🔍 Buscando arquivos no S3 sob o prefixo: '{prefix}'...")
 
     response = s3_client.list_objects_v2(Bucket=bucket_name, Prefix=prefix)
@@ -47,7 +27,7 @@ def list_s3_files(bucket_name: str, prefix: str = "2026/"):
 
 def read_json_from_s3(bucket_name: str, s3_key: str) -> dict | list:
     """Baixa um arquivo JSON do S3 e o converte para objeto Python."""
-    s3_client = get_s3_client()
+    s3_client = _get_s3_client()
     print(f"\n📖 Lendo o arquivo: s3://{bucket_name}/{s3_key}")
 
     response = s3_client.get_object(Bucket=bucket_name, Key=s3_key)

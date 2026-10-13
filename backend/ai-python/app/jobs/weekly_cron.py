@@ -21,7 +21,7 @@ def get_candidatos_ano_com_id(DB_url: str, ano: int) -> list[tuple[int, str, str
         FROM candidato c
         INNER JOIN candidato_twitter t ON c.id = t.candidato_id
         INNER JOIN monitoramento_ano m ON c.id = m.candidato_id
-        WHERE m.ano = %s;
+        WHERE m.ano = %s and m.executar = true;
     """
     with psycopg.connect(DB_url) as conn:
         with conn.cursor() as cur:

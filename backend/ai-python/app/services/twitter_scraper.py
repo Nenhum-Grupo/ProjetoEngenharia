@@ -172,7 +172,7 @@ class SocialMedia_Handler():
             FROM candidato c
             INNER JOIN candidato_twitter t on c.id = t.candidato_id
             INNER JOIN monitoramento_ano m ON c.id = m.candidato_id
-            WHERE m.ano = %s;
+            WHERE m.ano = %s and m.executar = true;
         """
 
         with psycopg.connect(DB_URL) as conn:

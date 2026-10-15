@@ -1,5 +1,4 @@
 package app.app.repository;
-
 import app.app.domain.Candidato.Candidato;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;

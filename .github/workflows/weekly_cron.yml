@@ -37,14 +37,14 @@ jobs:
       - name: Executar Weekly Cron Job
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
-          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
-          APIFY_API_TOKEN: ${{ secrets.APIFY_API_TOKEN }}
-          GITHUB_TOKEN: ${{ secrets.GH_STORAGE_TOKEN }}
-          GITHUB_REPO: ${{ secrets.GH_STORAGE_REPO }}
+          GOOGLE_API_KEY: ${{ secrets.GOOGLE_API_KEY }}
+          API_TWITTER: ${{ secrets.API_TWITTER }}
+          TOKEN_GITHUB: ${{ secrets.TOKEN_GITHUB }}
+          REPO_GITHUB: ${{ secrets.REPO_GITHUB }}
           GITHUB_BRANCH: "main"
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           AWS_REGION: ${{ secrets.AWS_REGION }}
-          BUCKET_NAME: ${{ secrets.BUCKET_NAME }}
+          BUCKETNAME: ${{ secrets.BUCKETNAME }}
         run: |
           python -m app.jobs.weekly_cron

@@ -6,8 +6,8 @@ from app.utils.s3_handler import _get_s3_client, _get_val
 
 
 def get_github_repo():
-    token = _get_val("github_token")
-    repo_name = _get_val("github_repo")
+    token = _get_val("token_github")
+    repo_name = _get_val("repo_github")
     g = Github(token)
     return g.get_repo(repo_name)
 

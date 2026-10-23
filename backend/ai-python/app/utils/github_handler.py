@@ -12,8 +12,8 @@ def _unwrap_secret(val):
 
 def get_github_repo():
     """Instancia a conexão com o repositório do GitHub."""
-    token = _unwrap_secret(getattr(settings, "github_token", None))
-    repo_name = _unwrap_secret(getattr(settings, "github_repo", None))  # ex: "usuario/tcc-storage"
+    token = _unwrap_secret(getattr(settings, "token_github", None))
+    repo_name = _unwrap_secret(getattr(settings, "repo_github", None))  # ex: "usuario/tcc-storage"
     
     g = Github(token)
     return g.get_repo(repo_name)

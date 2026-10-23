@@ -48,7 +48,7 @@ class SocialMedia_Handler():
         # Debug - pode ser removido posteriormente
         print(f"Iniciando busca para @{candidate_handle} ({since} ateh {until})...")
 
-        run = self.client.actor(self.ACTOR_ID).call(run_input=run_input)
+        run = self.client.actor(self.ACTOR_ID).call(run_input=run_input, build='latest')
 
         dataset_items = self.client.dataset(run.default_dataset_id).list_items().items
 
@@ -188,7 +188,7 @@ if __name__ == "__main__":
     # Controle de testes:
     # Se MOCK_MODE = False -> Faz a requisicao real no Apify e salva o JSON
     # Se MOCK_MODE = True  -> Le direto do arquivo local sem gastar creditos no Apify
-    MOCK_MODE = True
+    MOCK_MODE = False
     intervalo = None
 
     SMH = SocialMedia_Handler()

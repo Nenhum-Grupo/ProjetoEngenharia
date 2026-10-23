@@ -51,4 +51,14 @@ class Settings(BaseSettings):
               description="Database URL for connection",
        )
 
+       token_github: Optional[SecretStr] = Field(
+              default=None,
+              description="GitHub personal access token",
+       )
+
+       repo_github: Optional[SecretStr] = Field(
+              default=None,
+              description="GitHub repository name",
+       )
+
 settings = Settings()

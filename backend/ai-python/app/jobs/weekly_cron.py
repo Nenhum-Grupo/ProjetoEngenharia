@@ -1,7 +1,7 @@
 import json
 import psycopg
 
-from app.utils.s3_handler import upload_dict_to_s3, build_s3_key, get_s3_object
+from app.utils.github_handler import upload_dict_to_github, get_github_object, build_storage_key, get_github_repo
 
 from app.core.config import settings
 from app.services.summarize import Gemini_Handler
@@ -89,11 +89,11 @@ def processar_semana_candidato(
     social_handler: SocialMedia_Handler,
     gemini_handler: Gemini_Handler,
     db_url: str,
-    bucketname: str,
+    repo: str,
     ano: str = "2026"
 ):
     """
-    Processa os tweets de um candidato para uma semana específica, realizando scraping, limpeza, upload para S3 e resumo com Gemini.
+    Processa os tweets de um candidato para uma semana específica, realizando scraping, limpeza, upload para GitHub e resumo com Gemini.
 
     :param candidato_id: ID do candidato.
     :param nome: Nome do candidato.
@@ -104,7 +104,7 @@ def processar_semana_candidato(
     :param social_handler: Instância da classe SocialMedia_Handler.
     :param gemini_handler: Instância da classe Gemini_Handler.
     :param db_url: URL de conexão com o banco de dados PostgreSQL.
-    :param bucketname: Nome do bucket S3 para upload dos arquivos.
+    :param repo: Nome do repositório GitHub para upload dos arquivos.
     :param ano: Ano do monitoramento (padrão é "2026").
     """
 
@@ -121,7 +121,7 @@ def processar_semana_candidato(
         return
 
     clean_tweets = []
-    s3_key_posts = build_s3_key(ano=ano, candidato=candidato_pasta, subpasta="posts", filename=filename)
+    git_key_posts = build_storage_key(ano=ano, candidato=candidato_pasta, subpasta="posts", filename=filename)
 
     if not posts_ok:
         try:
@@ -129,7 +129,7 @@ def processar_semana_candidato(
             clean_tweets = social_handler.clean_and_filter_tweets(raw_tweets)
 
             if clean_tweets:
-                upload_dict_to_s3(clean_tweets, s3_key_posts, bucketname)
+                upload_dict_to_github(clean_tweets, git_key_posts, repo)
                 posts_ok = True
                 upsert_status_execucao(db_url, candidato_id, semana_str, posts=posts_ok, resumo=resumo_ok)
 
@@ -146,8 +146,8 @@ def processar_semana_candidato(
         print(f"Solicitando resumo semanal ao Gemini para @{handle} no período {filename}...")
         try:
             if not clean_tweets:
-                # Se os tweets limpos não foram carregados anteriormente, carregue-os do S3
-                clean_tweets = get_s3_object(bucketname, s3_key_posts)
+                # Se os tweets limpos não foram carregados anteriormente, carregue-os do GitHub
+                clean_tweets = get_github_object(git_key_posts)
             
             posts_str, intervalo = social_handler.format_tweets_for_gemini(clean_tweets)
             resumo_raw = gemini_handler.Resumo_Redes(intervalo, posts_str)
@@ -160,8 +160,8 @@ def processar_semana_candidato(
             else:
                 resumo_dict = resumo_raw
 
-            s3_key_resumo = build_s3_key(ano=ano, candidato=candidato_pasta, subpasta="resumo_posts", filename=filename)
-            upload_dict_to_s3(resumo_dict, s3_key_resumo, bucketname)
+            git_key_resumo = build_storage_key(ano=ano, candidato=candidato_pasta, subpasta="resumo_posts", filename=filename)
+            upload_dict_to_github(resumo_dict, git_key_resumo, repo)
 
             resumo_ok = True
             upsert_status_execucao(db_url, candidato_id, semana_str, posts=True, resumo=True)
@@ -176,11 +176,8 @@ def run_weekly_cron():
     """
 
     DB_url = settings.database_url.get_secret_value() if hasattr(settings.database_url, "get_secret_value") else settings.database_url
-    bucketname = (
-        settings.bucketname.get_secret_value()
-        if hasattr(settings.bucketname, "get_secret_value")
-        else settings.bucketname
-    )
+
+    repo = get_github_repo()
 
     social_handler = SocialMedia_Handler()
     gemini_handler = Gemini_Handler()
@@ -211,7 +208,7 @@ def run_weekly_cron():
                 social_handler=social_handler,
                 gemini_handler=gemini_handler,
                 db_url=DB_url,
-                bucketname=bucketname,
+                repo=repo,
                 ano=ano_anterior
             )
 
@@ -226,7 +223,7 @@ def run_weekly_cron():
             social_handler=social_handler,
             gemini_handler=gemini_handler,
             db_url=DB_url,
-            bucketname=bucketname,
+            repo=repo,
             ano=ano_atual
         )
 

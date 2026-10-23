@@ -6,21 +6,28 @@ on:
     - cron: '0 6 * * 0'
   workflow_dispatch:
 
+# Configura o diretório padrão onde os comandos 'run' serão executados
+defaults:
+  run:
+    working-directory: backend/ai-python
+
 jobs:
   run-weekly-cron:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout do código Python (branch s3repo)
+      - name: Checkout do código
         uses: actions/checkout@v4
         with:
-          ref: s3repo  # Baixa os scripts refatorados da branch s3repo
+          ref: s3repo # Baixa o código da branch s3repo
 
       - name: Configurar Python 3.11
         uses: actions/setup-python@v5
         with:
           python-version: '3.11'
           cache: 'pip'
+          # Aponta a localização do requirements.txt para o cache do pip funcionar corretamente
+          cache-dependency-path: backend/ai-python/requirements.txt
 
       - name: Instalar dependências
         run: |
@@ -30,14 +37,14 @@ jobs:
       - name: Executar Weekly Cron Job
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
-          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
-          APIFY_API_TOKEN: ${{ secrets.APIFY_API_TOKEN }}
-          GITHUB_TOKEN: ${{ secrets.GH_STORAGE_TOKEN }}
-          GITHUB_REPO: ${{ secrets.GH_STORAGE_REPO }}
-          GITHUB_BRANCH: "main" # Branch do repositório de DADOS destino
+          GOOGLE_API_KEY: ${{ secrets.GOOGLE_API_KEY }}
+          API_TWITTER: ${{ secrets.API_TWITTER }}
+          TOKEN_GITHUB: ${{ secrets.TOKEN_GITHUB }}
+          REPO_GITHUB: ${{ secrets.REPO_GITHUB }}
+          GITHUB_BRANCH: "main"
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           AWS_REGION: ${{ secrets.AWS_REGION }}
-          BUCKET_NAME: ${{ secrets.BUCKET_NAME }}
+          BUCKETNAME: ${{ secrets.BUCKETNAME }}
         run: |
           python -m app.jobs.weekly_cron

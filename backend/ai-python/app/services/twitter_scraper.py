@@ -1,4 +1,4 @@
-import json
+import jsons
 
 #from app.utils.date_discover import discover_currentTimePeriod, discover_previousTimePeriod
 from app.core.config import settings
@@ -39,16 +39,15 @@ class SocialMedia_Handler():
                 # dividimos 20000 por 30, para pegar quantos posts são permitidos por dia
                 # dividimos o resultado pelo número de candidatos, para saber quantos posts podemos pegar por candidato por dia
         run_input = {
-            "searchTerms": [search_query],
+            "include:nativeretweets": False,
             "queryType": "Latest",
-            #"maxItems": 30, # Trava de segurança para não explodir os créditos - julgado desnecessário no momento
-            "include:nativeretweets": False
+            "searchTerms": [search_query]
         }
 
         # Debug - pode ser removido posteriormente
         print(f"Iniciando busca para @{candidate_handle} ({since} ateh {until})...")
 
-        run = self.client.actor(self.ACTOR_ID).call(run_input=run_input, build='latest')
+        run = self.client.actor(self.ACTOR_ID).call(run_input=run_input)
 
         dataset_items = self.client.dataset(run.default_dataset_id).list_items().items
 
@@ -193,18 +192,18 @@ if __name__ == "__main__":
 
     SMH = SocialMedia_Handler()
     
-    candidate = SMH.candidatos[0][1] # candidatos[0] = ("Flavio Bolsonaro", "FlavioBolsonaro"), FlavioBolsonaro é o @
+    candidate = "FlavioBolsonaro" #SMH.candidatos[0][1] # candidatos[0] = ("Flavio Bolsonaro", "FlavioBolsonaro"), FlavioBolsonaro é o @
     mock_filename = f"tweets_{candidate}_sample.json"
     resumo_filename = f"resumo_{candidate}_sample.json"
 
     if not MOCK_MODE:
         #since_str, until_str = discover_timePeriod()
-        since_str, until_str = "2026-08-01_00:00:00_UTC", "2026-08-08_00:00:00_UTC"
+        since_str, until_str = "2026-10-17", "2026-10-24"
         resultado = SMH.fetch_tweets_for_candidate(candidate, since_str, until_str)
         resultado_filtrado = SMH.clean_and_filter_tweets(resultado)
 
         # Salva o resultado limpo localmente
-        SMH.save_tweets_to_json(resultado_filtrado, mock_filename)
+        SMH.save_to_json(resultado_filtrado, mock_filename)
     else:
         # Modo Offline: Le o JSON existente
         data = SMH.load_tweets_from_json(mock_filename)

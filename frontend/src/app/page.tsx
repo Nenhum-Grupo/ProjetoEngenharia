@@ -99,7 +99,7 @@ export default function Home() {
 
   const [filtros, setFiltros] = useState<Filtros>({
     nome: '',
-    ano: '2022',
+    ano: '2026',
     partido: '',
     cargo: '',
     estado: '',
@@ -111,7 +111,7 @@ export default function Home() {
   const podeSelecionarCidade =
     cargoNecessitaCidade(filtros.cargo) && filtros.estado.trim() !== '';
 
-  const anosComPadrao = Array.from(new Set([2022, ...anos])).sort(
+  const anosComPadrao = Array.from(new Set([2026, ...anos])).sort(
     (a, b) => b - a
   );
 
@@ -191,7 +191,7 @@ export default function Home() {
 
   const fetchAnos = async () => {
     try {
-      const anosResponse = await fetch(`${API_URL}/api/candidatos/anos`);
+      const anosResponse = await fetch(`/api/candidatos/anos`);
 
       if (!anosResponse.ok) {
         throw new Error(`Erro ao buscar anos: ${anosResponse.status}`);
@@ -218,7 +218,7 @@ export default function Home() {
 
       console.log('Body enviado:', body);
 
-      const res = await fetch(`${API_URL}/api/candidatos`, {
+      const res = await fetch(`/api/candidatos`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -282,7 +282,7 @@ export default function Home() {
   const limparFiltros = () => {
     setFiltros({
       nome: '',
-      ano: '2022',
+      ano: '2026',
       partido: '',
       cargo: '',
       estado: '',

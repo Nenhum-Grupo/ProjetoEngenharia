@@ -1,13 +1,4 @@
 'use client';
-import {
-  RadarChart,
-  PolarGrid,
-  PolarAngleAxis,
-  PolarRadiusAxis,
-  Radar,
-  ResponsiveContainer,
-  Tooltip,
-} from 'recharts';
 import React, { useEffect, useMemo, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import {
@@ -20,8 +11,11 @@ import {
   TextQuote,
   BarChart3,
   Target,
+  MessageSquare,
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import TopicosPizza from '@/components/TopicosPizza';
+import RadarEspectro from '@/components/RadarEspectro';
 
 const API_URL = process.env.NEXT_PUBLIC_BACKEND_URL;
 
@@ -99,6 +93,12 @@ export default function DetalheCandidato() {
   const [data, setData] = useState<any>(null);
   const [topicos, setTopicos] = useState<any[]>([]);
 
+  // Estados para monitoramento de redes sociais
+  const [redesData, setRedesData] = useState<any[]>([]);
+  const [loadingRedes, setLoadingRedes] = useState(false);
+  const [redesCarregadas, setRedesCarregadas] = useState(false);
+  const [expandedWeek, setExpandedWeek] = useState<string | null>(null);
+
   const [loading, setLoading] = useState(true);
   const [loadingTopicos, setLoadingTopicos] = useState(false);
   const [topicosCarregados, setTopicosCarregados] = useState(false);
@@ -122,7 +122,7 @@ export default function DetalheCandidato() {
         setExpandedProposal(null);
 
         const candidatoResponse = await fetch(
-          `${API_URL}/api/candidato/${candidatoId}`
+          `/api/candidato/${candidatoId}`
         );
 
         if (!candidatoResponse.ok) {
@@ -149,7 +149,7 @@ export default function DetalheCandidato() {
 
   useEffect(() => {
     if (!id) return;
-    if (activeTab !== 'topicos') return;
+    if (activeTab !== 'topicos' && activeTab !== 'espectro') return;
     if (topicosCarregados) return;
 
     const candidatoId = Array.isArray(id) ? id[0] : id;
@@ -159,7 +159,7 @@ export default function DetalheCandidato() {
         setLoadingTopicos(true);
 
         const topicosResponse = await fetch(
-          `${API_URL}/api/candidato/${candidatoId}/plano`
+          `/api/candidato/${candidatoId}/plano`
         );
 
         if (!topicosResponse.ok) {
@@ -185,6 +185,38 @@ export default function DetalheCandidato() {
 
     carregarTopicos();
   }, [id, activeTab, topicosCarregados]);
+
+  // Hook para carregar posts e resumos das Redes Sociais do candidato
+  useEffect(() => {
+    if (!id) return;
+    if (activeTab !== 'redes') return;
+    if (redesCarregadas) return;
+
+    const candidatoId = Array.isArray(id) ? id[0] : id;
+
+    async function carregarRedes() {
+      try {
+        setLoadingRedes(true);
+        const res = await fetch(`/api/candidato/${candidatoId}/redes`);
+
+        if (!res.ok) {
+          throw new Error(`Erro ao buscar dados de redes sociais: HTTP ${res.status}`);
+        }
+
+        const json = await res.json();
+        setRedesData(Array.isArray(json) ? json : json.semanas || []);
+        setRedesCarregadas(true);
+      } catch (err) {
+        console.error('Erro ao buscar redes sociais:', err);
+        setRedesData([]);
+        setRedesCarregadas(true);
+      } finally {
+        setLoadingRedes(false);
+      }
+    }
+
+    carregarRedes();
+  }, [id, activeTab, redesCarregadas]);
 
   const topicosNormalizados = useMemo(() => {
     return CATEGORIAS.map((categoria) => {
@@ -221,19 +253,18 @@ export default function DetalheCandidato() {
   }, [topicosNormalizados]);
 
   const dadosRadar = useMemo(() => {
-    const classificacoes = data?.graficoRadar || [];
-
-    return CATEGORIAS.map((categoria) => {
-      const item = classificacoes.find(
-        (c: any) => getCategoriaKey(c.categoria) === categoria.key
-      );
-
-      return {
-        categoriaLabel: categoria.label,
-        percentual: item?.percentual ?? 0,
-      };
-    });
-  }, [data]);
+    return topicosNormalizados.map((topico) => ({
+      key: topico.categoriaKey,
+      label: topico.categoriaLabel,
+      quantidade: Number(topico.quantidadePropostas || 0),
+      percentual:
+        totalPropostas > 0
+          ? Math.round(
+              (Number(topico.quantidadePropostas || 0) / totalPropostas) * 100
+            )
+          : 0,
+    }));
+  }, [topicosNormalizados, totalPropostas]);
 
   if (loading) {
     return (
@@ -252,7 +283,7 @@ export default function DetalheCandidato() {
   }
 
   const imageSrc = data.linkFoto
-    ? data.linkFoto.startsWith('data:')
+    ? data.linkFoto.startsWith('data:') || data.linkFoto.startsWith('http')
       ? data.linkFoto
       : `data:image/jpeg;base64,${data.linkFoto}`
     : null;
@@ -260,6 +291,7 @@ export default function DetalheCandidato() {
   const tabs = [
     { id: 'principal', label: 'Principal', icon: <Layout size={18} /> },
     { id: 'topicos', label: 'Resumo por Tópicos', icon: <TextQuote size={18} /> },
+    { id: 'redes', label: 'Posts & Redes Sociais', icon: <MessageSquare size={18} /> },
     { id: 'espectro', label: 'Espectro Político', icon: <BarChart3 size={18} /> },
     { id: 'coerencia', label: 'Índice de Coerência', icon: <Target size={18} /> },
   ];
@@ -315,7 +347,7 @@ export default function DetalheCandidato() {
                 <span className="w-1.5 h-1.5 bg-blue-500 rounded-full" />
                 <span>{data.cargo}</span>
                 <span className="w-1.5 h-1.5 bg-blue-500 rounded-full" />
-                <span>{data.ano ?? '2022'}</span>
+                <span>{data.ano ?? '2026'}</span>
               </div>
             </div>
           </div>
@@ -329,6 +361,7 @@ export default function DetalheCandidato() {
                 setActiveTab(tab.id);
                 setExpandedTopic(null);
                 setExpandedProposal(null);
+                setExpandedWeek(null);
               }}
               className={`flex items-center gap-2 px-6 py-3 rounded-full font-bold transition-all ${activeTab === tab.id
                 ? 'bg-blue-600 text-white shadow-lg shadow-blue-200'
@@ -647,8 +680,137 @@ export default function DetalheCandidato() {
               </div>
             )}
 
+            {/* ABA DE REDES SOCIAIS E POSTS (GITHUB DATA) */}
+            {activeTab === 'redes' && (
+              <div className="max-w-5xl mx-auto space-y-6">
+                {loadingRedes ? (
+                  <div className="bg-white p-10 rounded-3xl border border-slate-100 text-center">
+                    <div className="mx-auto mb-4 animate-spin rounded-full h-10 w-10 border-t-2 border-b-2 border-blue-600" />
+                    <p className="text-slate-500 font-bold">
+                      Carregando atividade de redes sociais...
+                    </p>
+                  </div>
+                ) : redesData.length > 0 ? (
+                  redesData.map((semanaItem: any, idx: number) => {
+                    const weekKey = semanaItem.semana || `semana-${idx}`;
+                    const isOpen = expandedWeek === weekKey;
+
+                    return (
+                      <div
+                        key={weekKey}
+                        className="bg-white rounded-[2rem] border border-slate-200 overflow-hidden shadow-sm"
+                      >
+                        <button
+                          onClick={() => setExpandedWeek(isOpen ? null : weekKey)}
+                          className="w-full px-6 md:px-8 py-6 flex items-center justify-between hover:bg-slate-50 transition-colors"
+                        >
+                          <div className="flex items-center gap-4">
+                            <div className="bg-blue-50 text-blue-600 p-3 rounded-2xl">
+                              <MessageSquare size={20} />
+                            </div>
+
+                            <div className="text-left">
+                              <h3 className="font-black text-slate-900 text-base md:text-lg">
+                                Período: {semanaItem.semana}
+                              </h3>
+                              <span className="text-xs text-slate-500 font-bold">
+                                {semanaItem.totalPosts ?? semanaItem.posts?.length ?? 0} tweets analisados
+                              </span>
+                            </div>
+                          </div>
+
+                          {isOpen ? (
+                            <Minus className="text-blue-600 shrink-0" />
+                          ) : (
+                            <Plus className="text-blue-600 shrink-0" />
+                          )}
+                        </button>
+
+                        <AnimatePresence>
+                          {isOpen && (
+                            <motion.div
+                              initial={{ height: 0, opacity: 0 }}
+                              animate={{ height: 'auto', opacity: 1 }}
+                              exit={{ height: 0, opacity: 0 }}
+                              className="overflow-hidden"
+                            >
+                              <div className="px-6 md:px-8 pb-8 pt-4 border-t border-slate-100 space-y-6">
+                                {semanaItem.resumo && (
+                                  <div className="bg-blue-50/60 rounded-3xl p-6 border border-blue-100">
+                                    <p className="text-xs font-black uppercase tracking-widest text-blue-600 mb-2">
+                                      Resumo da Semana (IA)
+                                    </p>
+                                    <p className="text-slate-700 leading-relaxed font-medium">
+                                      {semanaItem.resumo.resumo ||
+                                        JSON.stringify(semanaItem.resumo)}
+                                    </p>
+                                  </div>
+                                )}
+                                <div className="space-y-3">
+                                  <h4 className="text-xs font-black text-slate-400 uppercase tracking-widest">
+                                    Tópicos mais discutidos na semana
+                                  </h4>
+                                  <TopicosPizza topicos={semanaItem.topicos} />
+                                </div>
+                                <div className="space-y-3">
+                                  <h4 className="text-xs font-black text-slate-400 uppercase tracking-widest">
+                                    Tweets Destacados
+                                  </h4>
+
+                                  {semanaItem.posts && semanaItem.posts.length > 0 ? (
+                                    <div className="grid gap-3">
+                                      {semanaItem.posts.map(
+                                        (post: any, pIdx: number) => (
+                                          <div
+                                            key={pIdx}
+                                            className="p-4 rounded-2xl border border-slate-100 bg-slate-50/50 text-sm text-slate-700"
+                                          >
+                                            <p className="font-medium">
+                                              {post.text || post.conteudo || post}
+                                            </p>
+                                            <div className="mt-2 flex flex-wrap items-center gap-3 text-[10px] font-bold text-slate-400">
+                                              {post.createdAt && (
+                                                <span>{new Date(post.createdAt).toLocaleDateString('pt-BR')}</span>
+                                              )}
+                                              {typeof post.likes === 'number' && (
+                                                <span>❤ {post.likes.toLocaleString('pt-BR')}</span>
+                                              )}
+                                              {typeof post.retweets === 'number' && (
+                                                <span>🔁 {post.retweets.toLocaleString('pt-BR')}</span>
+                                              )}
+                                              {post.url && (
+                                                <a href={post.url} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">
+                                                  Ver no X
+                                                </a>
+                                              )}
+                                            </div>
+                                          </div>
+                                        )
+                                      )}
+                                    </div>
+                                  ) : (
+                                    <p className="text-sm text-slate-400 italic">
+                                      Nenhum tweet extraído nesta semana.
+                                    </p>
+                                  )}
+                                </div>
+                              </div>
+                            </motion.div>
+                          )}
+                        </AnimatePresence>
+                      </div>
+                    );
+                  })
+                ) : (
+                  <div className="bg-white p-10 rounded-[2rem] border border-slate-100 text-center text-slate-500 font-bold">
+                    Nenhum histórico de redes sociais encontrado para este candidato.
+                  </div>
+                )}
+              </div>
+            )}
+
             {activeTab === 'espectro' && (
-              <div className="bg-white p-10 rounded-[3rem] border border-slate-100 shadow-sm">
+              <div className="bg-white p-6 md:p-10 rounded-[3rem] border border-slate-100 shadow-sm">
                 <div className="mb-8">
                   <p className="text-xs font-black uppercase tracking-[0.25em] text-blue-600 mb-2">
                     Classificação temática
@@ -663,29 +825,28 @@ export default function DetalheCandidato() {
                   )}
                 </div>
 
-                <ResponsiveContainer width="100%" height={450}>
-                  <RadarChart data={dadosRadar} outerRadius="75%">
-                    <PolarGrid stroke="#E2E8F0" />
-                    <PolarAngleAxis
-                      dataKey="categoriaLabel"
-                      tick={{ fill: '#334155', fontSize: 12, fontWeight: 700 }}
-                    />
-                    <PolarRadiusAxis
-                      angle={30}
-                      domain={[0, 100]}
-                      tick={{ fill: '#94A3B8', fontSize: 10 }}
-                    />
-                    <Radar
-                      name={data.nome}
-                      dataKey="percentual"
-                      stroke="#2563EB"
-                      fill="#2563EB"
-                      fillOpacity={0.35}
-                      strokeWidth={2}
-                    />
-                    <Tooltip formatter={(value: any) => `${value}%`} />
-                  </RadarChart>
-                </ResponsiveContainer>
+                <RadarEspectro
+                  dados={dadosRadar}
+                  carregando={loadingTopicos}
+                  nome={data.nome}
+                />
+              </div>
+            )}
+
+            {activeTab === 'coerencia' && (
+              <div className="bg-white p-16 rounded-[3rem] border border-slate-100 shadow-sm text-center">
+                <div className="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-2xl bg-blue-50 text-blue-600">
+                  <Target size={30} />
+                </div>
+                <p className="text-xs font-black uppercase tracking-[0.25em] text-blue-600 mb-2">
+                  Em breve
+                </p>
+                <h2 className="text-2xl md:text-3xl font-black text-slate-900 mb-3">
+                  Índice de Coerência
+                </h2>
+                <p className="text-slate-500 font-medium">
+                  Esta funcionalidade está em desenvolvimento.
+                </p>
               </div>
             )}
           </motion.div>

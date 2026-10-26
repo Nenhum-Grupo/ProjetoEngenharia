@@ -19,7 +19,7 @@ jobs:
       - name: Checkout do código
         uses: actions/checkout@v4
         with:
-          ref: s3repo # Baixa o código da branch s3repo
+          ref: main # Baixa o código da branch s3repo
 
       - name: Configurar Python 3.11
         uses: actions/setup-python@v5

@@ -14,12 +14,13 @@ defaults:
 jobs:
   run-weekly-cron:
     runs-on: ubuntu-latest
+    timeout-minutes: 10 # <--- ADICIONADO AQUI: Cancela o job se exceder 10 minutos
 
     steps:
       - name: Checkout do código
         uses: actions/checkout@v4
         with:
-          ref: main # Baixa o código da branch s3repo
+          ref: main # Baixa o código da branch main
 
       - name: Configurar Python 3.11
         uses: actions/setup-python@v5
@@ -35,6 +36,7 @@ jobs:
           pip install -r requirements.txt
 
       - name: Executar Weekly Cron Job
+        timeout-minutes: 10 # <--- OPCIONAL: Garante o limite diretamente na execução do script Python
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
           GOOGLE_API_KEY: ${{ secrets.GOOGLE_API_KEY }}

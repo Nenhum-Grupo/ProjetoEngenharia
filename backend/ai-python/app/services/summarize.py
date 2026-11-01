@@ -1,20 +1,34 @@
 from app.core.config import settings
 
 from google.genai import types, errors
+from pydantic import BaseModel, Field
+from typing import List, Optional
 from google import genai
 from time import sleep
 import inspect
-import boto3
 import json
 import os
+
+class TweetCategorized(BaseModel):
+    id: str = Field(description="ID único original do tweet analisado")
+    post_citado: Optional[str] = Field(default="---", description="Texto do post citado/retweetado ou '---'")
+    post: str = Field(description="Texto do post analisado")
+    categoria: str = Field(description="Categoria atribuída ao post")
+
+class TweetCategorizedBatch(BaseModel):
+    results: List[TweetCategorized] = Field(description="Lista contendo as análises estruturadas de todos os tweets fornecidos no prompt")
 
 class Gemini_Handler():
     def __init__(self, arquivo=None):
         self.arquivo = arquivo
 
         self.client = genai.Client(api_key=settings.google_api_key.get_secret_value())
+
         self.MODELS = ["models/gemini-2.5-flash", "models/gemma-4-31b-it", "models/gemini-3.1-flash-lite"]
-        self.MODEL_ID = self.MODELS[2]
+
+        self.categorizador = self.MODELS[2]
+        self.resumidor = self.MODELS[2]
+
         self.agentes = {
         "redes_sociais": """
         Você é um Analista de Comunicação Política e Estatístico especializado em sintetizar o posicionamento de candidatos nas redes sociais para a população.
@@ -73,8 +87,111 @@ class Gemini_Handler():
             }
         ]
         }
+        """,
+        "Categorizador": """
+        Você é um Analista de Comunicação Política e Estatístico especializado em categorizar postagens de candidatos políticos nas redes sociais. Dado um post, você deve categorizá-lo em uma das seguintes categorias: 
+
+        - RELACOES_INTERNACIONAIS (acordos, diplomatas, posições geopolíticas, comércio exterior)
+        - LIBERDADE_DEMOCRACIA (liberdade de expressão, instituições, STF, transparência, combate ao autoritarismo)
+        - SISTEMA_POLITICO (reforma política, críticas a adversários/partidos, alianças, funcionamento do Estado, Justiça)
+        - ECONOMIA (impostos, inflação, emprego, indústria, gastos públicos, agro, mercado)
+        - BEM_ESTAR_QUALIDADE_DE_VIDA (saúde, educação, segurança pública, moradia, transporte, meio ambiente)
+        - ESTRUTURA_SOCIAL (combate à pobreza, desigualdade, programas sociais, fome)
+        - GRUPOS_SOCIAIS (pautas de mulheres, negros, indígenas, PCDs, idosos, jovens, religiosos)
+        - OFF_TOPIC (posts que não se encaixam nas categorias acima e, necessariamente, não são "posts políticos")
         """
 }
+
+    def categorização_posts(self, posts):
+        """
+        Analisa uma lista de posts e categoriza cada um deles em tópicos políticos relevantes, ignorando conteúdos sem relevância política.
+
+        :param posts: lista de strings contendo os posts a serem analisados
+        :return: lista de dicionários com a categorização dos posts
+        """
+
+        posts_mapeados = []
+
+        for i in range(2):
+
+            post_formatado = ""
+
+            for post in posts:
+                if str(post.get("id")) in posts_mapeados:
+                    continue
+                post_formatado += f"id: {post.get('id')}\npost_citado: {post.get('quoted_context') or '---'}\npost: {post.get('text')}\n"
+
+            if post_formatado == "":
+                break
+            
+            agente = self.agentes["Categorizador"]
+
+            for tentativa in range(3):
+                try:
+                    print("Iniciando processamento de categorização")
+                    response = self.client.models.generate_content(
+                        model=self.categorizador,
+                        contents=[
+                            types.Content(
+                                role="user",
+                                parts=[types.Part.from_text(text=f"{agente}\n\n{post_formatado}")]
+                            )
+                        ],
+                        config=types.GenerateContentConfig(
+                            response_mime_type="application/json",
+                            response_schema=TweetCategorizedBatch,
+                            temperature=0.1,
+                        ),
+                    )
+
+                    break
+
+                except errors.ServerError as e:
+                    if tentativa < 2:
+                        metodo_atual = inspect.currentframe().f_code.co_name
+                        print(f"Erro de servidor em: {metodo_atual}. Esperando 5 minutos.")
+
+                        sleep(300)
+                        continue
+                    raise e
+
+            structured_data = TweetCategorizedBatch.model_validate_json(response.text)
+
+            mapa_gemini = {str(item.id): item for item in structured_data.results}
+
+            for post in posts:
+                post_id = str(post.get("id"))
+
+                if post_id in posts_mapeados:
+                    continue
+                
+                # 1. Primeira checagem: o ID existe no mapa?
+                if post_id in mapa_gemini:
+                    item_gemini = mapa_gemini[post_id]
+                    
+                    # Normaliza os textos para comparação (remove espaços extras e torna minúsculo)
+                    texto_original = " ".join(post.get("text", "").split()).lower()
+                    texto_gemini = " ".join(item_gemini.post.split()).lower()
+                    
+                    # 2. Segunda checagem (Dupla Verificação): compara os primeiros 50 caracteres
+                    if texto_original[:50] == texto_gemini[:50]:
+                        post["category"] = item_gemini.categoria
+                        post["erro"] = False  # Marca o post como consistente
+                        post["detalhe_erro"] = None
+                        posts_mapeados.append(post_id)
+                    else:
+                        # Log de alerta caso o ID bata mas o conteúdo seja totalmente diferente
+                        print(f"⚠️ Alerta de inconsistência no Tweet ID {post_id}: Texto não bate 100%.")
+                        post["category"] = "OFF_TOPIC"
+                        post["erro"] = True  # Marca o post para revisão manual
+                        post["detalhe_erro"] = f"DIVERGENCIA_TEXTO | ia_retornou: {texto_gemini}"
+                else:
+                    post["category"] = "OFF_TOPIC"
+                    post["erro"] = True  # Marca o post para revisão manual
+                    post["detalhe_erro"] = "ID_NAO_ENCONTRADO"
+
+        return posts
+
 
     def Resumo_Redes(self, intervalo, posts, bucketName=None, bucketKey=None):
         if bucketName is None or bucketKey is None:
@@ -99,7 +216,7 @@ class Gemini_Handler():
                 try:
                     print("Iniciando processamento do resumo das redes sociais")
                     response = self.client.models.generate_content(
-                        model=self.MODEL_ID,
+                        model=self.resumidor,
                         contents=contents,
                         config=config,
                     )
@@ -115,3 +232,25 @@ class Gemini_Handler():
                     raise e
         else:
             pass
+
+
+if __name__ == "__main__":
+    GH = Gemini_Handler()
+    filename = "tweets_FlavioBolsonaro_sample.json"
+    filepath = os.path.join(os.getcwd(), "data", "mock", filename)
+    
+    if not os.path.exists(filepath):
+        raise FileNotFoundError(f"Arquivo local não encontrado em: {filepath}")
+
+    with open(filepath, "r", encoding="utf-8") as f:
+        data = json.load(f)
+
+    new_data = GH.categorização_posts(data)
+
+    folder_path = os.path.join(os.getcwd(), "data", "mock")
+    os.makedirs(folder_path, exist_ok=True)  # Cria a pasta caso nao exista
+
+    filepath = os.path.join(folder_path, "tweets_categorizados_FlavioBolsonaro_sample.json")
+
+    with open(filepath, "w", encoding="utf-8") as f:
+        json.dump(new_data, f, ensure_ascii=False, indent=4)

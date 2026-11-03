@@ -19,7 +19,7 @@ def get_github_repo():
     return g.get_repo(repo_name)
 
 
-def upload_dict_to_github(data_dict: list | dict, file_path: str, repo_instance=None):
+def upload_dict_to_github(data_dict: list | dict, file_path: str, repo_instance=None, branch: str ="main"):
     """
     Envia um dicionário/lista formatado como JSON para um caminho específico no repositório.
     Atualiza o arquivo se ele já existir (sobrescrita limpa equivalente ao S3).
@@ -30,13 +30,13 @@ def upload_dict_to_github(data_dict: list | dict, file_path: str, repo_instance=
 
     try:
         # Tenta buscar o arquivo existente para pegar o SHA (necessário para sobrescrever)
-        existing_file = repo.get_contents(file_path)
+        existing_file = repo.get_contents(file_path, ref=branch)
         repo.update_file(
             path=file_path,
             message=commit_message,
             content=json_str,
             sha=existing_file.sha,
-            branch="main"
+            branch=branch
         )
         print(f"  🐙 [GitHub] Arquivo atualizado: {file_path}")
 
@@ -47,7 +47,7 @@ def upload_dict_to_github(data_dict: list | dict, file_path: str, repo_instance=
                 path=file_path,
                 message=commit_message,
                 content=json_str,
-                branch="main"
+                branch=branch
             )
             print(f"  🐙 [GitHub] Arquivo criado: {file_path}")
         else:
@@ -55,14 +55,14 @@ def upload_dict_to_github(data_dict: list | dict, file_path: str, repo_instance=
             raise e
 
 
-def get_github_object(file_path: str, repo_instance=None) -> list | dict:
+def get_github_object(file_path: str, repo_instance=None, branch: str = "main") -> list | dict:
     """
     Lê um arquivo JSON do repositório privado do GitHub e o converte para objeto Python.
     """
     repo = repo_instance or get_github_repo()
     
     try:
-        content_file = repo.get_contents(file_path)
+        content_file = repo.get_contents(file_path, ref=branch)
         # O GitHub retorna o conteúdo em base64
         decoded_bytes = base64.b64decode(content_file.content)
         json_str = decoded_bytes.decode("utf-8")

@@ -129,7 +129,8 @@ def processar_semana_candidato(
             clean_tweets = social_handler.clean_and_filter_tweets(raw_tweets)
 
             if clean_tweets:
-                upload_dict_to_github(clean_tweets, git_key_posts, repo)
+                clean_categorized_tweets = gemini_handler.categorização_posts(clean_tweets)
+                upload_dict_to_github(clean_categorized_tweets, git_key_posts, repo)
                 posts_ok = True
                 upsert_status_execucao(db_url, candidato_id, semana_str, posts=posts_ok, resumo=resumo_ok)
 
